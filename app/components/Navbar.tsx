@@ -14,18 +14,23 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-[#B5CBA6] text-white shadow-md z-50">
-      <div className="max-w-screen-xl mx-auto flex justify-between items-center p-3">
-        {/* 左：ロゴ */}
-        <div className="text-2xl font-bold flex-shrink-0">MyPortfolio</div>
+    <nav className="fixed top-0 left-0 w-full bg-white text-black border-b border-b-[#B5CBA6] z-50">
+      <div className="max-w-screen-xl mx-auto flex items-center justify-between p-4">
 
-        {/* 中央：ナビ */}
-        <ul className="hidden md:flex justify-center flex-1 space-x-8 px-4">
+        {/* --- 左：ブランドロゴ --- */}
+        <div className="flex-shrink-0">
+          <h1 className="text-2xl font-semibold tracking-wide text-[#2E4600]">
+            BloomLog
+          </h1>
+        </div>
+
+        {/* --- 中央：PCナビ --- */}
+        <ul className="hidden md:flex justify-center flex-1 space-x-10 text-lg">
           {navItems.map((item) => (
             <li key={item.href}>
               <Link
                 href={item.href}
-                className="hover:text-[#F0FFF0] transition-colors"
+                className="hover:text-[#2E4600] transition-colors font-medium"
               >
                 {item.label}
               </Link>
@@ -33,43 +38,43 @@ export default function Navbar() {
           ))}
         </ul>
 
-        <div className="hidden md:block relative flex-shrink-0">
-  <button
-    onClick={() => setIsOpen(!isOpen)}
-    className="bg-white text-[#2E4600] px-4 py-2 rounded-md font-semibold shadow hover:bg-gray-100 transition-colors w-full"
-  >
-    Get Started
-  </button>
+        {/* --- 右：PCの Get Started + Dropdown --- */}
+        <div className="hidden md:block relative">
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="bg-white text-[#2E4600] px-4 py-2 rounded-md font-semibold shadow hover:bg-gray-100 transition-colors"
+          >
+            Get Started
+          </button>
 
-  {/* ドロップダウン */}
-  {isOpen && (
-    <div className="absolute right-0 mt-2 w-full bg-white rounded-md shadow-lg flex flex-col z-50">
-      <Link
-        href="/register"
-        className="px-4 py-2 text-gray-800 hover:bg-gray-100 transition-colors rounded-t-md w-full text-center"
-        onClick={() => setIsOpen(false)}
-      >
-        Register
-      </Link>
-      <Link
-        href="/login"
-        className="px-4 py-2 text-gray-800 hover:bg-gray-100 transition-colors rounded-b-md w-full text-center"
-        onClick={() => setIsOpen(false)}
-      >
-        Login
-      </Link>
-    </div>
-  )}
-</div>
+          {isOpen && (
+            <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-50">
+              <Link
+                href="/register"
+                className="block px-2 py-2 text-gray-800 hover:bg-gray-100 transition-colors text-center"
+                onClick={() => setIsOpen(false)}
+              >
+                Register
+              </Link>
+              <Link
+                href="/login"
+                className="block px-2 py-2 text-gray-800 hover:bg-gray-100 transition-colors text-center"
+                onClick={() => setIsOpen(false)}
+              >
+                Login
+              </Link>
+            </div>
+          )}
+        </div>
 
-        {/* モバイル用ハンバーガーメニュー */}
+        {/* --- モバイル：ハンバーガー --- */}
         <div className="md:hidden relative">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="text-white focus:outline-none"
+            className="text-black focus:outline-none"
           >
             <svg
-              className="w-6 h-6"
+              className="w-7 h-7"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -83,9 +88,8 @@ export default function Navbar() {
             </svg>
           </button>
 
-          {/* モバイルメニュー */}
           {isOpen && (
-            <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg flex flex-col z-50 text-black">
+            <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-50 text-black flex flex-col">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
@@ -96,17 +100,17 @@ export default function Navbar() {
                   {item.label}
                 </Link>
               ))}
-              {/* モバイルではここにGet Startedの中身を入れる */}
+
               <Link
                 href="/register"
-                className="px-4 py-2 hover:bg-gray-100 transition-colors rounded-t-md"
+                className="px-4 py-2 hover:bg-gray-100 transition-colors"
                 onClick={() => setIsOpen(false)}
               >
                 Register
               </Link>
               <Link
                 href="/login"
-                className="px-4 py-2 hover:bg-gray-100 transition-colors rounded-b-md"
+                className="px-4 py-2 hover:bg-gray-100 transition-colors"
                 onClick={() => setIsOpen(false)}
               >
                 Login

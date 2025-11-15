@@ -1,7 +1,9 @@
-import React from 'react'
-
+import Navbar from "../components/Navbar";
 export default function Postpage() {
-  return (
-    <h1>I am post</h1>
-  )
+   return (
+       <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+            <Navbar />
+            <h1 className="text-3xl"> I am Post</h1>
+          </div>
+        );
 }
