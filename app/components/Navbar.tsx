@@ -14,8 +14,8 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-white text-black border-b border-b-[#B5CBA6] z-50">
-      <div className="max-w-screen-xl mx-auto flex items-center justify-between p-4">
+    <nav className="sticky top-0 left-0 w-full bg-white text-black border-b border-b-[#B5CBA6] z-50">
+      <div className="max-w-screen-xl mx-auto flex items-center justify-between p-2">
 
         {/* --- 左：ブランドロゴ --- */}
         <div className="flex-shrink-0">
@@ -48,17 +48,17 @@ export default function Navbar() {
           </button>
 
           {isOpen && (
-            <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-50">
+            <div className="absolute right-0 px-4 mt-2 bg-white rounded-md shadow-lg z-50">
               <Link
                 href="/register"
-                className="block px-2 py-2 text-gray-800 hover:bg-gray-100 transition-colors text-center"
+                className="block px-4 py-2 text-gray-800 hover:bg-gray-100 transition-colors"
                 onClick={() => setIsOpen(false)}
               >
                 Register
               </Link>
               <Link
                 href="/login"
-                className="block px-2 py-2 text-gray-800 hover:bg-gray-100 transition-colors text-center"
+                className="block px-4 py-2 text-gray-800 hover:bg-gray-100 transition-colors"
                 onClick={() => setIsOpen(false)}
               >
                 Login
