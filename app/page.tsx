@@ -14,12 +14,12 @@ export default function Home() {
 
       </div>
 
-      <div className="p-4 rounded-lg
+      <div className="p-2 rounded-lg
                       md:col-start-1 md:row-start-2">
-         <h1 className="text-3xl font-bold text-white/50 ">Lorem ipsum dolor sit amet.</h1>
+         <h1 className="text-2xl font-bold text-white/50 ">Lorem ipsum dolor sit amet.</h1>
       </div>
 
-      <div className=" p-4 rounded-lg
+      <div className=" p-2 rounded-lg
                       md:col-start-3 md:row-start-2">
           <h1 className="text-2xl font-bold text-white/50 ">Lorem ipsum dolor sit amet.</h1>
       </div>
