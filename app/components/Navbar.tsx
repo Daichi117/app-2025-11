@@ -1,124 +1,75 @@
-// components/Navbar.tsx
 "use client";
-import React, { useState } from "react";
-import Link from "next/link";
 
-export default function Navbar() {
+import { Button } from "../ui/button";
+import { LogOut, PenSquare } from "lucide-react";
+
+interface NavigationProps {
+  currentPage: string;
+  onNavigate: (page: string) => void;
+  isLoggedIn: boolean;
+  onLogout: () => void;
+  username?: string;
+}
+
+export function Navigation({ currentPage, onNavigate, isLoggedIn, onLogout, username }: NavigationProps) {
   const navItems = [
-    { label: "Home", href: "/" },
-    { label: "About", href: "/about" },
-    { label: "Work", href: "/work" },
-    { label: "Post", href: "/post" },
+    { page: "home", label: "Home" },
+    { page: "about", label: "About" },
+    { page: "work", label: "Work" },
+    { page: "contact", label: "Contact" },
   ];
 
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
-    <nav className="sticky top-0 left-0 w-full bg-white text-black border-b border-b-[#B5CBA6] z-50">
-      <div className="max-w-screen-xl mx-auto flex items-center justify-between p-2">
-
-        {/* --- 左：ブランドロゴ --- */}
-        <div className="flex-shrink-0">
-          <h1 className="text-2xl font-semibold tracking-wide text-[#2E4600]">
-            BloomLog
+    <header className="bg-card border-b border-border sticky top-0 z-50">
+      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-8">
+          <h1 
+            className="text-foreground cursor-pointer"
+            onClick={() => onNavigate("home")}
+          >
+            The Blog
           </h1>
-        </div>
-
-        {/* --- 中央：PCナビ --- */}
-        <ul className="hidden md:flex justify-center flex-1 space-x-10 text-lg">
-          {navItems.map((item) => (
-            <li key={item.href}>
-              <Link
-                href={item.href}
-                className="hover:text-[#2E4600] transition-colors font-medium"
+          <nav className="hidden md:flex items-center gap-6">
+            {navItems.map((item) => (
+              <button
+                key={item.page}
+                onClick={() => onNavigate(item.page)}
+                className={`transition-colors ${
+                  currentPage === item.page
+                    ? "text-primary"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
               >
                 {item.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-
-        {/* --- 右：PCの Get Started + Dropdown --- */}
-        <div className="hidden md:block relative">
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="bg-white text-[#2E4600] px-4 py-2 rounded-md font-semibold shadow hover:bg-gray-100 transition-colors"
-          >
-            Get Started
-          </button>
-
-          {isOpen && (
-            <div className="absolute right-0 px-4 mt-2 bg-white rounded-md shadow-lg z-50">
-              <Link
-                href="/register"
-                className="block px-4 py-2 text-gray-800 hover:bg-gray-100 transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Register
-              </Link>
-              <Link
-                href="/login"
-                className="block px-4 py-2 text-gray-800 hover:bg-gray-100 transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Login
-              </Link>
-            </div>
-          )}
+              </button>
+            ))}
+          </nav>
         </div>
 
-        {/* --- モバイル：ハンバーガー --- */}
-        <div className="md:hidden relative">
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="text-black focus:outline-none"
-          >
-            <svg
-              className="w-7 h-7"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </button>
+        <div className="flex items-center gap-4">
+          {isLoggedIn ? (
+            <>
+              <span className="text-muted-foreground hidden md:inline">{username}</span>
 
-          {isOpen && (
-            <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-50 text-black flex flex-col">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="px-4 py-2 hover:bg-gray-100 transition-colors"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              ))}
+              <Button 
+                className="hidden md:flex items-center gap-2"
+                onClick={() => onNavigate("post")}
+              >
+                <PenSquare className="size-4" />
+                New Post
+              </Button>
 
-              <Link
-                href="/register"
-                className="px-4 py-2 hover:bg-gray-100 transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Register
-              </Link>
-              <Link
-                href="/login"
-                className="px-4 py-2 hover:bg-gray-100 transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Login
-              </Link>
-            </div>
+              <Button variant="ghost" size="icon" onClick={onLogout} className="text-muted-foreground">
+                <LogOut className="size-5" />
+              </Button>
+            </>
+          ) : (
+            <Button onClick={() => onNavigate("getstarted")}>
+              Get Started
+            </Button>
           )}
         </div>
       </div>
-    </nav>
+    </header>
   );
 }

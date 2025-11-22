@@ -1,34 +1,13 @@
-import Navbar from "./components/Navbar";
-
-export default function Home() {
-  return (
-    <>
-     <Navbar />
-     <div className="grid grid-cols-1 grid-rows-3 h-[90vh]
-                md:grid-cols-3 md:grid-rows-2 md:gap-4">
-              
-
-      <div className="p-4 rounded-lg
-                      md:col-start-2 md:row-start-1 text-center">
-                    <h1 className="text-2xl font-bold text-white/50 ">Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt, cupiditate.</h1>
-
-      </div>
-
-      <div className="p-2 rounded-lg
-                      md:col-start-1 md:row-start-2">
-         <h1 className="text-2xl font-bold text-white/50 ">Lorem ipsum dolor sit amet.</h1>
-      </div>
-
-      <div className=" p-2 rounded-lg
-                      md:col-start-3 md:row-start-2">
-          <h1 className="text-2xl font-bold text-white/50 ">Lorem ipsum dolor sit amet.</h1>
-      </div>
-
-    </div>
-
-    </>
-     
-     
-    
-  );
-}
+"use client";
+import { useState } from "react";
+import { Navigation } from "./components/Navbar";
+import { Footer } from "./components/Footer";
+import {HomePage} from "./pages/home/Home"
+import { AboutPage } from "./components/pages/AboutPage";
+import { WorkPage } from "./components/pages/WorkPage";
+import { ContactPage } from "./components/pages/ContactPage";
+import { GetStartedPage } from "./components/pages/GetStartedPage";
+import { PostPage } from "./components/pages/PostPage";
+import { PostDetailPage } from "./components/pages/PostDetailPage";
+import { Toaster } from "./ui/sonner";
+// Initial mock posts
