@@ -1,4 +1,4 @@
-import { HomePage } from "./components/pages/home/page";
+import { HomePage } from "./components/home/page";
 import { getAllPosts } from "./lib/posts";
 
 export default function Home() {
