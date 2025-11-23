@@ -1,6 +1,6 @@
-import { ImageWithFallback } from "../figma/ImageWithFallback";
+import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Calendar, Clock } from "lucide-react";
-import { Badge } from "../ui/badge";
+import { Badge } from "./ui/badge";
 
 interface BlogCardProps {
   title: string;

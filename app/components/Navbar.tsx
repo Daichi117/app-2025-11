@@ -1,72 +1,77 @@
 "use client";
 
-import { Button } from "../ui/button";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Button } from "./ui/button";
 import { LogOut, PenSquare } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
 
-interface NavigationProps {
-  currentPage: string;
-  onNavigate: (page: string) => void;
-  isLoggedIn: boolean;
-  onLogout: () => void;
-  username?: string;
-}
+export function Navigation() {
+  const pathname = usePathname();
+  const { isLoggedIn, username, logout } = useAuth();
 
-export function Navigation({ currentPage, onNavigate, isLoggedIn, onLogout, username }: NavigationProps) {
   const navItems = [
-    { page: "home", label: "Home" },
-    { page: "about", label: "About" },
-    { page: "work", label: "Work" },
-    { page: "contact", label: "Contact" },
+    { id: 'home', label: 'Home', href: '/' },
+    { id: 'about', label: 'About', href: '/about' },
+    { id: 'work', label: 'Work', href: '/work' },
+    { id: 'contact', label: 'Contact', href: '/contact' },
   ];
+
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/';
+    return pathname.startsWith(href);
+  };
 
   return (
     <header className="bg-card border-b border-border sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <div className="flex items-center gap-8">
-          <h1 
-            className="text-foreground cursor-pointer"
-            onClick={() => onNavigate("home")}
-          >
-            The Blog
-          </h1>
+          <Link href="/">
+            <h1 className="text-foreground cursor-pointer">
+              BloomLog
+            </h1>
+          </Link>
           <nav className="hidden md:flex items-center gap-6">
-            {navItems.map((item) => (
-              <button
-                key={item.page}
-                onClick={() => onNavigate(item.page)}
+            {navItems.map(item => (
+              <Link
+                key={item.id}
+                href={item.href}
                 className={`transition-colors ${
-                  currentPage === item.page
-                    ? "text-primary"
-                    : "text-muted-foreground hover:text-foreground"
+                  isActive(item.href)
+                    ? 'text-primary' 
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 {item.label}
-              </button>
+              </Link>
             ))}
           </nav>
         </div>
-
         <div className="flex items-center gap-4">
           {isLoggedIn ? (
             <>
-              <span className="text-muted-foreground hidden md:inline">{username}</span>
-
+              <span className="text-muted-foreground hidden md:inline">
+                {username}
+              </span>
+              <Link href="/post">
+                <Button className="hidden md:flex items-center gap-2">
+                  <PenSquare className="size-4" />
+                  New Post
+                </Button>
+              </Link>
               <Button 
-                className="hidden md:flex items-center gap-2"
-                onClick={() => onNavigate("post")}
+                variant="ghost" 
+                size="icon"
+                onClick={logout}
+                className="text-muted-foreground"
               >
-                <PenSquare className="size-4" />
-                New Post
-              </Button>
-
-              <Button variant="ghost" size="icon" onClick={onLogout} className="text-muted-foreground">
                 <LogOut className="size-5" />
               </Button>
             </>
           ) : (
-            <Button onClick={() => onNavigate("getstarted")}>
-              Get Started
-            </Button>
+            <Link href="/getstarted">
+              <Button>Get Started</Button>
+            </Link>
           )}
         </div>
       </div>
