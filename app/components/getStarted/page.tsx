@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { toast } from "sonner";
 import { useAuth } from "../../contexts/AuthContext";
 
-export function GetStartedPage() {
+export default function GetStartedPage() {
   const router = useRouter();
   const { login } = useAuth();
 

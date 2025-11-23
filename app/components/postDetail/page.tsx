@@ -26,7 +26,7 @@ interface PostDetailPageProps {
   post: Post;
 }
 
-export function PostDetailPage({ post }: PostDetailPageProps) {
+export default function PostDetailPage({ post }: PostDetailPageProps) {
   const router = useRouter();
 
   const handleShare = (platform: string) => {

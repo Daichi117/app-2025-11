@@ -2,7 +2,7 @@
 
 import { ReactNode } from "react";
 import { AuthProvider } from "../contexts/AuthContext";
-import { Navigation } from "./Navbar";
+import Navigation from "./Navbar";
 import { Footer } from "./Footer";
 import { Toaster } from "./ui/sonner";
 

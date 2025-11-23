@@ -6,7 +6,7 @@ import { Button } from "./ui/button";
 import { LogOut, PenSquare } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 
-export function Navigation() {
+export default function Navigation() {
   const pathname = usePathname();
   const { isLoggedIn, username, logout } = useAuth();
 

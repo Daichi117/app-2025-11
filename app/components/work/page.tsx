@@ -26,7 +26,7 @@ interface WorkPageProps {
   posts: Post[];
 }
 
-export function WorkPage({ posts }: WorkPageProps) {
+export default function WorkPage({ posts }: WorkPageProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
