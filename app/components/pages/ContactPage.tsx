@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@ui/button";
-import { Input } from "@ui/input";
-import { Textarea } from "@ui/textarea";
-import { Label } from "@ui/label";
-import { Mail, Send, Twitter, Linkedin, Github } from "lucide-react";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+import { Label } from "../ui/label";
+import { Mail, Send, Linkedin, Github } from "lucide-react";
 import { toast } from "sonner";
 
 export function ContactPage() {
@@ -138,7 +138,9 @@ export function ContactPage() {
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 p-3 bg-background rounded-lg hover:bg-muted transition-colors group"
                 >
-                  <Twitter className="size-5 text-primary" />
+                  <svg className="size-5 text-primary" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
                   <div>
                     <p className="text-foreground group-hover:text-primary transition-colors">Twitter (X)</p>
                     <p className="text-muted-foreground text-sm">@theblog</p>
