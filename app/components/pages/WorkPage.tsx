@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { useState } from "react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
+import { Badge } from "@ui/badge";
+import { Button } from "@ui/button";
 import { Calendar, Clock, Search } from "lucide-react";
-import { Input } from "../ui/input";
+import { Input } from "@ui/input";
 
 interface Post {
   id: number;
@@ -26,7 +26,7 @@ interface WorkPageProps {
   posts: Post[];
 }
 
-export default function WorkPage({ posts }: WorkPageProps) {
+export function WorkPage({ posts }: WorkPageProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 

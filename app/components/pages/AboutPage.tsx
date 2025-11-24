@@ -1,7 +1,7 @@
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { Sparkles, Users, Share2, TrendingUp } from "lucide-react";
 
-export default function AboutPage() {
+export function AboutPage() {
   return (
     <div className="container mx-auto px-4 py-12">
       {/* Hero */}

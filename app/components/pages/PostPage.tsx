@@ -2,16 +2,16 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
-import { Label } from "../ui/label";
-import { Badge } from "../ui/badge";
+import { Button } from "@ui/button";
+import { Input } from "@ui/input";
+import { Textarea } from "@ui/textarea";
+import { Label } from "@ui/label";
+import { Badge } from "@ui/badge";
 import { Sparkles, Save, Send, Calendar, X } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "../../contexts/AuthContext";
 
-export default function PostPage() {
+export function PostPage() {
   const router = useRouter();
   const { username, isLoggedIn } = useAuth();
 

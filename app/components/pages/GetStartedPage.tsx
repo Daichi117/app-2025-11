@@ -2,14 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { Button } from "@ui/button";
+import { Input } from "@ui/input";
+import { Label } from "@ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/tabs";
 import { toast } from "sonner";
 import { useAuth } from "../../contexts/AuthContext";
 
-export default function GetStartedPage() {
+export function GetStartedPage() {
   const router = useRouter();
   const { login } = useAuth();
 
