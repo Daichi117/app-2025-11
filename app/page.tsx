@@ -6,7 +6,7 @@ import { AboutPage } from '@pages/AboutPage'
 import { WorkPage } from '@pages/WorkPage';
 import { ContactPage } from "./components/pages/ContactPage";
 import { GetStartedPage } from "./components/pages/GetStartedPage";
-import { PostPage } from "./components/pages/PostPage";
+
 import Navigation from './components/Navbar';
 import { Footer } from './components/Footer';
 import { Toaster } from 'sonner';
