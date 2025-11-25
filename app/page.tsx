@@ -1,9 +1,10 @@
 "use client";
 import { useState,useEffect } from 'react'
 import { AuthProvider } from './contexts/AuthContext'
-import { HomePage } from '@pages/HomePage'
+import { HomePage } from '@pages/home/HomePage'
 import { AboutPage } from '@pages/AboutPage'
 import { WorkPage } from '@pages/WorkPage';
+import {PostPage} from "@pages/PostPage"
 import { ContactPage } from "./components/pages/ContactPage";
 import { GetStartedPage } from "./components/pages/GetStartedPage";
 
@@ -61,7 +62,7 @@ function Router() {
   } else if (currentPath === "/getstarted") {
     content = <GetStartedPage />;
   } else if (currentPath === "/post") {
-    content = <PostPage />;
+    content = <PostPage post={posts}/>;
   }
   return content;
 }

@@ -23,7 +23,8 @@
       "@components/*": ["src/components/*"],
       "@pages/*": ["app/components/pages/*"],
       "@lib/*": ["app/lib/*"],
-      "@ui/*": ["app/components/ui/*"]
+      "@ui/*": ["app/components/ui/*"],
+      "@type/*": ["app/components/types/*"]
     }
   },
   "include": [
