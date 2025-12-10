@@ -6,6 +6,7 @@ import { Calendar, Clock } from "lucide-react";
 import { ImageWithFallback } from "../../figma/ImageWithFallback";
 import { HomePageContents } from "./contents";
 import { Post } from "@type/types";
+
 interface FeaturedPostSectionProps {
     featuredPost: Post | null; // もし値がない場合に備えて null も許可
   }

@@ -7,7 +7,7 @@ import { Input } from "@ui/input";
 import { Label } from "@ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@ui/tabs";
 import { toast } from "sonner";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "app/contexts/AuthContext";
 
 export function GetStartedPage() {
   const router = useRouter();

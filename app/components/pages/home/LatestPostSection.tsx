@@ -6,7 +6,6 @@ import { Calendar, Clock, ArrowRight } from "lucide-react";
 import { ImageWithFallback } from "../../figma/ImageWithFallback";
 import { Button } from "@ui/button";
 import { HomePageContents } from "./contents";
-import { link } from "fs";
 import { Post } from "@type/types";
 
 interface LatestPostSectionProps {

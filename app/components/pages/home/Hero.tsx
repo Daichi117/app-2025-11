@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { HomePageContents } from "./contents";
 import { Button } from "@ui/button";
-import { HomePage } from "./HomePage";
 
 export function Hero() {
     return (
