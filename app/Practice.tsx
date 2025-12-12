@@ -9,7 +9,7 @@ interface Props {
   username?: string;
 }
 
-const [{id,label,href}] = dashboardNavItems;
+const [{href}] = dashboardNavItems;
 
 
 export default function Logo({isLoggedIn,username}:Props){
