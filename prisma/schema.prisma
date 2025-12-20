@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client.js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+ id        String   @id @default(uuid())   // 主キー、一意のID
+  username  String   @unique                // ユーザー名は重複不可
+  email     String   @unique                // メールアドレスも重複不可
+  password  String                             // ログイン用パスワード
+  role      Role     @default(USER)          // 権限、USER or ADMIN
+  thoughts  Thought[]                        // このユーザーが書いた思考一覧
+  createdAt DateTime @default(now())        // 作成日時
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+
+model Thought {
+  id          String   @id @default(uuid())     // 主キー
+  authorId    String                              // 投稿者(User)のID
+  title       String                              // 思考タイトル
+  slug        String   @unique                    // URL用、一意の識別子
+  content     String                              // 思考本文
+  status      ThoughtStatus                        // 公開状態: 下書き or 公開
+  publishedAt DateTime?                             // 公開日時
+  createdAt   DateTime @default(now())             // 作成日時
+  updatedAt   DateTime @updatedAt                 // 更新日時
+}

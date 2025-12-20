@@ -18,13 +18,9 @@
         "name": "next"
       }
     ],
-    "baseUrl": ".",
+    "baseUrl": "app",
     "paths": {
-      "@components/*": ["src/components/*"],
-      "@pages/*": ["app/components/pages/*"],
-      "@lib/*": ["app/lib/*"],
-      "@ui/*": ["app/components/ui/*"],
-      "@type/*": ["app/components/types/*"]
+      "@/*": ["app/*"]
     }
   },
   "include": [

@@ -1,19 +1,15 @@
-"use client";
+import "./styles/index.css"
+import { ReactNode } from "react";
+import { LanguageProvider } from "contexts/LanguageContext";
 
-import "./globals.css";
-import { AuthProvider } from "app/contexts/AuthContext";
-import type { ReactNode } from "react";
-
-export default function RootLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  return (
-    <html lang="ja">
-      <body>
-        <AuthProvider>{children}</AuthProvider>
-      </body>
-    </html>
-  );
-}
+export default function RootLayout({ children }: { children: ReactNode }) {
+    return (
+      <html lang="ja">
+        <body className="bg-background text-foreground">
+          <LanguageProvider>
+            {children}
+          </LanguageProvider>
+        </body>
+      </html>
+    );
+  }

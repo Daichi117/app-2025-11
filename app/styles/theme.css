@@ -1,0 +1,206 @@
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+  
+  /* 金融系カラースキーム */
+  --background: #f8f9fb;
+  --foreground: #1a202c;
+  --card: #ffffff;
+  --card-foreground: #1a202c;
+  
+  /* プライマリカラー：ダークブルー（信頼感・安定感） */
+  --primary: #1e3a5f;
+  --primary-foreground: #ffffff;
+  --primary-hover: #2c5282;
+  
+  /* セカンダリカラー：グリーン（成長・ポジティブ） */
+  --secondary: #10b981;
+  --secondary-foreground: #ffffff;
+  
+  /* アクセントカラー */
+  --accent: #3b82f6;
+  --accent-foreground: #ffffff;
+  
+  /* ニュートラルカラー */
+  --muted: #e5e7eb;
+  --muted-foreground: #6b7280;
+  
+  /* 警告・エラー */
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --warning: #f59e0b;
+  
+  /* ボーダー */
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --input-background: #ffffff;
+  
+  /* チャートカラー（金融系） */
+  --chart-1: #1e3a5f; /* ダークブルー */
+  --chart-2: #10b981; /* グリーン */
+  --chart-3: #3b82f6; /* ブルー */
+  --chart-4: #8b5cf6; /* パープル */
+  --chart-5: #f59e0b; /* オレンジ */
+  
+  /* 数値表示用カラー */
+  --positive: #10b981;
+  --negative: #ef4444;
+  --neutral: #6b7280;
+  
+  /* 柔らかいフォントウェイト */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  --radius: 0.5rem;
+  --ring: #3b82f6;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-warning: var(--warning);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-positive: var(--positive);
+  --color-negative: var(--negative);
+  --color-neutral: var(--neutral);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: 'tnum'; /* 数字を等幅に */
+  }
+
+  html {
+    font-size: var(--font-size);
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: var(--font-weight-bold);
+    line-height: 1.2;
+    color: var(--foreground);
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.3;
+    color: var(--foreground);
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.4;
+    color: var(--foreground);
+  }
+
+  h4 {
+    font-size: 1rem;
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+    color: var(--foreground);
+  }
+
+  label {
+    font-size: 0.875rem;
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+    color: var(--muted-foreground);
+  }
+
+  button {
+    font-size: 0.9375rem;
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  input, select {
+    font-size: 0.9375rem;
+    font-weight: var(--font-weight-normal);
+    line-height: 1.5;
+  }
+
+  /* 数字専用フォント（等幅） */
+  .number {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+  }
+  
+  /* 多言語対応：レイアウト安定化 */
+  .text-stable {
+    /* テキストが長くなっても要素の高さを維持 */
+    min-height: fit-content;
+    line-height: 1.5;
+  }
+  
+  .text-ellipsis-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .text-ellipsis-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* カード要素の固定高さ */
+  .card-fixed-height {
+    min-height: 120px;
+    height: auto;
+  }
+  
+  .card-fixed-height-lg {
+    min-height: 160px;
+    height: auto;
+  }
+  
+  /* ボタンの固定幅 */
+  .btn-fixed-width {
+    min-width: 120px;
+  }
+  
+  .btn-fixed-width-sm {
+    min-width: 80px;
+  }
+}
