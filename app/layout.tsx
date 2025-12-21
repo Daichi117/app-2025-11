@@ -1,7 +1,6 @@
 import "./styles/index.css"
 import { ReactNode } from "react";
 import { LanguageProvider } from "contexts/LanguageContext";
-import { HomeTranslations } from "pages/home/i18n";
 import { AppTranslations } from "i18n";
 export default function RootLayout({ children }: { children: ReactNode }) {
     return (

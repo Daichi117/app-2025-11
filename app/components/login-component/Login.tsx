@@ -68,8 +68,28 @@ export function LoginPage() {
       </div>
 
       <div className="w-full max-w-md">
-        <Link href="/" className="flex justify-center mb-8">
-          <span className="text-3xl font-bold text-white">Mirai</span>
+      <Link
+          href="/"
+          className="flex items-center justify-center gap-3 mb-8 group"
+        >
+          <div className="relative w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all">
+            <svg
+              className="w-7 h-7 text-primary"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2.5}
+                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+              />
+            </svg>
+          </div>
+          <span className="text-3xl font-bold text-white tracking-tight">
+            Mirai
+          </span>
         </Link>
 
         <div className="bg-white rounded-lg shadow-xl p-6 md:p-8">
