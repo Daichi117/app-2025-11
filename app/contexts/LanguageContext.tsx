@@ -1,48 +1,39 @@
-// LanguageContext.tsx
 "use client";
-import { createContext, useContext, useState, ReactNode, useMemo } from "react";
-import { Language } from "i18n/types";
-import { HomeTranslations } from "pages/home/i18n";// 各ページごとの翻訳をimport
+import { createContext,useContext,useState,ReactNode,useMemo } from "react";
+import { Language} from "i18n/types";
 
-type LanguageContextType = {
+type Translations = Record<Language,any>;
+interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string) => string; // ←ここに追加
-};
+  t:(key:string)=> string;
+}
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>("ja");
-
+export function LanguageProvider({children,translations}:{children:ReactNode,translations:Translations}) {
+  const [language,setLanguage] = useState<Language>('ja');
   const t = useMemo(() => {
     return (key: string): string => {
-      // ドット区切りを解釈してネストを辿る
       const keys = key.split(".");
-      let result: any = HomeTranslations[language];
-      
+      let result = translations[language];
+
       if (!result) {
-        console.warn(`No translations found for language: ${language}`);
+        console.warn(`No translations for language: ${language}`);
         return key;
       }
-      
+
       for (const k of keys) {
-        if (result === null || result === undefined) {
+        if (result == null) {
           console.warn(`Translation key not found: ${key}`);
           return key;
         }
         result = result[k];
       }
-      
-      // 結果が文字列でない場合は key を返す
-      if (typeof result !== 'string') {
-        console.warn(`Translation value is not a string for key: ${key}`);
-        return key;
-      }
-      
-      return result;
+
+      return typeof result === "string" ? result : key;
     };
-  }, [language]);
+  }, [language, translations]);
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, t }}>
@@ -53,6 +44,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
 export function useLanguage(): LanguageContextType {
   const context = useContext(LanguageContext);
-  if (!context) throw new Error("useLanguage must be used within LanguageProvider");
+  if (!context) {
+    throw new Error("useLanguage must be used within LanguageProvider");
+  }
   return context;
 }
+

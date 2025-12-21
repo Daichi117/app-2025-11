@@ -11,16 +11,16 @@ export function HomeNav() {
       <div className="flex items-center justify-between h-16">
         <div className="flex items-center">
           <Link href="/" className="flex items-center gap-2 md:gap-3 group">
-            {/* ロゴアイコン */}
-            <div className="relative w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
-              <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-              </svg>
+             {/* ロゴアイコン */}
+             <div className="relative w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
+                  <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
             </div>
             {/* ブランド名 */}
             <div className="flex flex-col">
               <span className="text-xl md:text-2xl font-bold text-primary tracking-tight">Mirai</span>
-              <span className="text-xs text-muted-foreground -mt-1 hidden md:block">{t('nav.subtitle')}</span>
+              <span className="text-xs text-muted-foreground -mt-1 hidden md:block">{t('home.nav.subtitle')}</span>
             </div>
           </Link>
         </div>
@@ -51,16 +51,16 @@ export function HomeNav() {
           </div>
           
           <Link 
-            href="/login" 
+            href="/login?mode=login" 
             className="hidden md:block px-6 py-2 text-primary hover:text-primary-hover font-semibold transition-colors"
           >
-            {t('nav.login')}
+            {t('home.nav.login')}
           </Link>
           <Link 
-            href="/login" 
+            href="/login?mode=signup" 
             className="px-4 md:px-6 py-2 bg-primary text-white text-sm md:text-base font-semibold rounded-lg hover:bg-primary-hover transition-colors"
           >
-            {t('nav.signup')}
+            {t('home.nav.signup')}
           </Link>
         </div>
       </div>
