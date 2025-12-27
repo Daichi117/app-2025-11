@@ -11,5 +11,6 @@ export default {
         signupLink: 'Sign Up',
         passwordMismatch: 'Passwords do not match',
         signupSuccess: 'Sign up completed successfully!',
+        loginSuccess: 'Login successful',
       },
 }

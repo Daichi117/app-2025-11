@@ -1,6 +1,6 @@
 // i18n/index.ts
 import { HomeTranslations } from "pages/home/i18n";
-import { LoginTranslations } from "components/login-component/i18n";
+import { LoginTranslations } from "components/login/i18n";
 
 export const AppTranslations = {
   ja: {

@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useLanguage } from "contexts/LanguageContext";
@@ -36,11 +34,11 @@ export function LoginPage() {
     e.preventDefault();
 
     if (isSignup && password !== confirmPassword) {
-      alert(t("login.passwordMismatch"));
+      alert(t("login.login.passwordMismatch"));
       return;
     }
 
-    alert(isLogin ? t("login.loginSuccess") : t("login.signupSuccess"));
+    alert(isLogin ? t("login.login.loginSuccess") : t("login.login.signupSuccess"));
   };
 
   return (

@@ -11,5 +11,6 @@ export default {
         signupLink: '新規登録',
         passwordMismatch: 'パスワードが一致しません',
         signupSuccess: '新規登録が完了しました！',
+        loginSuccess: 'ログインが完了しました',
       },
 }
