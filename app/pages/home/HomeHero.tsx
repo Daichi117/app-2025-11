@@ -6,7 +6,7 @@ export function HomeHero() {
   const { t } = useLanguage(); // もう context から直接取得可能
 
   return (
-     <div className="bg-gradient-to-br from-primary via-primary-hover to-primary">
+     <div className="bg-gradient-to-br from-primary via-primary-hover to-primary  min-h-[100dvh]">
      <div className="max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-32">
        <div className="text-center">
          <div className="flex justify-center items-center gap-3 md:gap-4 mb-6 md:mb-8">

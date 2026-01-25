@@ -5,7 +5,7 @@ import { AppTranslations } from "i18n";
 export default function RootLayout({ children }: { children: ReactNode }) {
     return (
       <html lang="ja">
-        <body className="bg-background text-foreground">
+        <body className="bg-background text-foreground w-screen h-screen">
           <LanguageProvider translations={AppTranslations}>
             {children}
           </LanguageProvider>
