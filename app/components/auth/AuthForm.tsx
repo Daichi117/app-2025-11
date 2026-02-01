@@ -45,4 +45,54 @@ export function AuthForm() {
           {uiState.error}
         </div>
       )}
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {!isLogin && (
+            <AuthInput
+                label={t("login.login.name")}
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                autoComplete="username"
+            />
+        )}
+        <AuthInput
+          label={t("login.login.email")}
+          name="email"
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
+          autoComplete="email"
+        />
+
+        <AuthInput
+          label={t("login.login.password")}
+          name="password"
+          type="password"
+          value={formData.password}
+          onChange={handleChange}
+          autoComplete={isLogin ? "current-password" : "new-password"}
+        />
+
+        {!isLogin && (
+          <AuthInput
+            label={t("login.login.confirmPassword")}
+            name="confirmPassword"
+            type="password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            autoComplete="new-password"
+          />
+        )}
+        <button
+          type="submit"
+          disabled={uiState.isLoading}
+          className={`w-full py-3 bg-primary text-white rounded-xl font-semibold shadow-lg shadow-primary/30 transition-all ${
+            uiState.isLoading ? "opacity-70 cursor-wait" : "hover:bg-primary-hover active:scale-[0.98]"
+          }`}
+        >
+          {uiState.isLoading ? "..." : isLogin ? t("login.login.submit") : t("login.login.signup")}
+        </button>
+      </form>
+      </div>
+  );
 }

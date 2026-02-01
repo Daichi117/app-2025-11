@@ -13,7 +13,7 @@ export async function GET(req: Request) {
       select: {
         id: true,
         email: true,
-        username: true,
+        name: true,
       },
     });
 
