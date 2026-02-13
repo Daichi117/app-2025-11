@@ -19,7 +19,7 @@ export function AuthForm() {
     <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8">
       <h1 className="text-2xl font-bold text-center mb-8">{t("login.login.title")}</h1>
 
-      {/* タブUIのロジック: 現在のモードに応じてスタイルを動的に変更 */}
+
       <nav className="flex justify-center mb-6 p-1 bg-gray-100 rounded-xl" aria-label="Tabs">
         <Link
           href="/login?mode=login"
