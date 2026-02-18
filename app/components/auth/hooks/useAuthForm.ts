@@ -1,70 +1,115 @@
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
-// t関数の型を定義（型パズルにならない程度の厳密さ）
 type TranslateFn = (key: string) => string;
 
+// ① フォームデータの型を明示（型安全性の向上）
+type FormData = {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  name: string;
+};
+
+// ② UIの状態を明示（isLoadingとerrorを分離）
+type UiState = {
+  isLoading: boolean;
+  error: string | null;
+};
+
+// ③ バリデーションロジックを関数として切り出す（handleSubmitをスッキリさせる）
+function validateForm(isLogin: boolean, formData: FormData, t: TranslateFn): string | null {
+  // メールアドレスの簡易チェック
+  if (!formData.email.includes("@")) {
+    return t("login.validation.invalidEmail") || "有効なメールアドレスを入力してください";
+  }
+
+  // パスワードの最低文字数チェック
+  if (formData.password.length < 8) {
+    return t("login.validation.passwordTooShort") || "パスワードは8文字以上にしてください";
+  }
+
+  // 新規登録時のみ：パスワード一致チェック
+  if (!isLogin && formData.password !== formData.confirmPassword) {
+    return t("login.login.passwordMismatch");
+  }
+
+  // 新規登録時のみ：名前の入力チェック
+  if (!isLogin && !formData.name.trim()) {
+    return t("login.validation.nameRequired") || "名前を入力してください";
+  }
+
+  return null; // エラーなし
+}
+
 export function useAuthForm(isLogin: boolean, t: TranslateFn) {
-  const router = useRouter(); // 画面遷移のための道具
-  
-  // 【記憶】入力された文字をリアルタイムで保持する箱
-  const [formData, setFormData] = useState({
+  const router = useRouter();
+
+  const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
     confirmPassword: "",
-    name: ""
+    name: "",
   });
 
-  // 【状態】「通信中か？」「エラーはあるか？」という状況を管理
-  const [uiState, setUiState] = useState({
+  const [uiState, setUiState] = useState<UiState>({
     isLoading: false,
-    error: null as string | null,
+    error: null,
   });
 
-  // 【更新】文字が入力されるたびに「記憶（formData）」を書き換える
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    // ...prev は「他の項目を消さずに、指定した項目(name)だけ上書きする」というロジック
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // ④ 入力中にエラーをリセット（UX改善：入力し直したらエラーが消える）
+    setUiState((prev) => ({ ...prev, error: null }));
   }, []);
 
-  // 【実行】ボタンが押された時のメイン処理
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); // ブラウザ独自のページリロードを阻止
-    setUiState({ isLoading: true, error: null }); // ロード開始
+  // ⑤ handleSubmit を useCallback で最適化
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault();
 
-    // ロジック：新規登録時のみ、パスワードの不一致をチェック
-    if (!isLogin && formData.password !== formData.confirmPassword) {
-      setUiState({ isLoading: false, error: t("login.login.passwordMismatch") });
-      return; // ここで終了（ガード節）
+    // ⑥ バリデーションを先に実行（関数に切り出したことでスッキリ）
+    const validationError = validateForm(isLogin, formData, t);
+    if (validationError) {
+      setUiState({ isLoading: false, error: validationError });
+      return;
     }
 
+    setUiState({ isLoading: true, error: null });
+
     try {
-      // ロジック：モードによって宛先URLを切り替える
       const endpoint = isLogin ? "/api/auth/Login" : "/api/auth/Register";
-      
-      // ロジック：サーバーが受け取れる形(JSON)に整える（Payloadの作成）
+
+      // ⑦ 送信データを変数に切り出す（bodyの中が長くなりすぎないように）
+      const payload = isLogin
+        ? { email: formData.email, password: formData.password }
+        : { email: formData.email, password: formData.password, name: formData.name };
+
       const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(isLogin ? { email: formData.email, password: formData.password } : formData),
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message); // 失敗ならcatchへ飛ばす
+      if (!response.ok) throw new Error(data.message);
 
-      // 成功時の振る舞い
+      // ⑧ 成功後にフォームをリセット（セキュリティ：パスワードを残さない）
+      setFormData({ email: "", password: "", confirmPassword: "", name: "" });
+
       if (isLogin) {
-        router.push("/dashboard"); // ダッシュボードへ
-        router.refresh(); // 最新の状態に更新
+        router.push("/dashboard");
+        router.refresh();
       } else {
-        router.push("/login?mode=login"); // ログイン画面へ戻す
+        router.push("/login?mode=login");
       }
-    } catch (err: any) {
-      setUiState({ isLoading: false, error: err.message }); // エラーを画面に表示
+    } catch (err: unknown) {
+      // ⑨ err の型を unknown に（any より安全）
+      const message = err instanceof Error ? err.message : "予期しないエラーが発生しました";
+      setUiState({ isLoading: false, error: message });
     }
-  };
+  }, [isLogin, formData, t, router]);
 
-  // 最後に、これらを「顔（AuthForm）」が使えるようにエクスポート
   return { formData, uiState, handleChange, handleSubmit };
 }

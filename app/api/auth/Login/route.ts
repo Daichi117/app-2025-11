@@ -6,7 +6,7 @@ import { SignAccessToken } from "lib/auth"; // パスは環境に合わせて調
 export async function POST(req: Request) {
   try {
     const { email, password } = await req.json();
-
+    
     if (!email || !password) {
       return NextResponse.json({ message: "Email and password required" }, { status: 400 });
     }

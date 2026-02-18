@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { NextRequest } from "next/server";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
-const ACCESS_TOKEN_EXPIRATION = 60 * 60; // 1時間（秒）
+const ACCESS_TOKEN_EXPIRATION = 60 * 60; 
 
 // 役割：ユーザーIDを「秘密の署名」付きの文字列（JWT）に変換する
 export function SignAccessToken(payload: object) {

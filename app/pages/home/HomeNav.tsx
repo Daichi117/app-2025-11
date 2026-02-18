@@ -49,18 +49,48 @@ export function HomeNav({ isLoggedIn = false }: HomeNavProps) {
           <div className="flex items-center space-x-2 md:space-x-4">
             {/* 言語切り替え */}
             <div className="flex items-center gap-1 md:gap-2 bg-background rounded-lg p-1 border border-border">
-              <button onClick={() => setLanguage('ja')} className={`px-2 md:px-3 py-1 md:py-1.5 text-xs md:text-sm rounded-md font-medium transition-all ${language === 'ja' ? 'bg-primary text-white' : 'text-muted-foreground'}`}>日本語</button>
-              <button onClick={() => setLanguage('en')} className={`px-2 md:px-3 py-1 md:py-1.5 text-xs md:text-sm rounded-md font-medium transition-all ${language === 'en' ? 'bg-primary text-white' : 'text-muted-foreground'}`}>English</button>
+              <button onClick={() => setLanguage('ja')} className={`px-2 md:px-3 py-1 md:py-1.5 text-xs md:text-sm rounded-md font-medium transition-all ${language === 'ja' ? 'bg-primary text-white' : 'text-muted-foreground'}`}>
+                {/* 小さい画面：JA、大きい画面：日本語 */}
+                <span>JP</span>
+              </button>
+              <button onClick={() => setLanguage('en')} className={`px-2 md:px-3 py-1 md:py-1.5 text-xs md:text-sm rounded-md font-medium transition-all ${language === 'en' ? 'bg-primary text-white' : 'text-muted-foreground'}`}>
+                <span>EN</span>
+              </button>
             </div>
             
             {/* 💡 条件分岐：isLoggedInがtrueならログアウトボタン、falseならログインリンク */}
             {isLoggedIn ? (
               <button
-                onClick={handleLogout}
-                className="hidden md:block px-4 py-2 text-primary font-semibold hover:text-primary-hover transition-colors"
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-4 py-2 text-red-500 font-semibold hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+            >
+              {/* ログアウトアイコン：矢印がドアから出るイメージ */}
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
               >
+                {/* ドア部分 */}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 16l4-4m0 0l-4-4m4 4H7"
+                />
+                {/* 枠部分 */}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"
+                />
+              </svg>
+              <span className="hidden md:inline">
                 {t('home.nav.logout') || "Logout"}
-              </button>
+              </span>
+            </button>
             ) : (
               <>
                 <Link href="/login?mode=login" className="hidden md:block px-6 py-2 text-primary font-semibold hover:text-primary-hover transition-colors">

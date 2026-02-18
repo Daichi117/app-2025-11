@@ -17,7 +17,9 @@ export function AuthForm() {
 
   return (
     <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8">
-      <h1 className="text-2xl font-bold text-center mb-8">{t("login.login.title")}</h1>
+      <h1 className="text-2xl font-bold text-center mb-8">
+        {isLogin? t("login.login.login"): t("login.login.signup")}   
+      </h1>
 
 
       <nav className="flex justify-center mb-6 p-1 bg-gray-100 rounded-xl" aria-label="Tabs">
@@ -61,7 +63,7 @@ export function AuthForm() {
           type="email"
           value={formData.email}
           onChange={handleChange}
-          autoComplete="email"
+          autoComplete="off"
         />
 
         <AuthInput
@@ -70,7 +72,7 @@ export function AuthForm() {
           type="password"
           value={formData.password}
           onChange={handleChange}
-          autoComplete={isLogin ? "current-password" : "new-password"}
+          autoComplete="new-password"
         />
 
         {!isLogin && (
