@@ -2,7 +2,7 @@ export default {
     login: {
         title: 'ログイン',
         login: 'ログイン',
-        signup: '新規登録',
+        singup: '新規登録',
         name: '名前',
         email: 'メールアドレス',
         password: 'パスワード',
