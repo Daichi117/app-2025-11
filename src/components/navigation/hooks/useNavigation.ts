@@ -8,7 +8,7 @@ export function useNavigation() {
 
     const navItems = [
         {path:"/dashboard",label: t("nav.home.title")},
-        {path:"/household",label: t("nav.household.title")},
+        {path:"/dashboard/household",label: t("nav.household.title")},
         {path:"/simulation",label: t("nav.simulation.title")},
     ];
 

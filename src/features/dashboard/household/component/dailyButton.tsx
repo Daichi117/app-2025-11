@@ -10,18 +10,17 @@ interface PeriodFilterProps {
 export default function PeriodFilter({ timePeriod, setTimePeriod }: PeriodFilterProps) {
   const { t } = useLanguage();
 
-  // ① ボタンとして表示したいリストを定義
   const periods: { id: TimePeriod; labelKey: string }[] = [
-    { id: 'daily', labelKey: 'period.daily' },
-    { id: 'monthly', labelKey: 'period.monthly' },
-    { id: 'yearly', labelKey: 'period.yearly' },
-    { id: 'all', labelKey: 'period.all' },
+    { id: 'daily', labelKey: 'household.period.daily' },
+    { id: 'monthly', labelKey: 'household.period.monthly' },
+    { id: 'yearly', labelKey: 'household.period.yearly' },
+    { id: 'all', labelKey: 'household.period.all' },
   ];
 
   return (
 
    <>
-   <span className='font-semibold'>{t("period.label")}</span>
+   <span className='font-semibold'>{t("household.period.label")}</span>
     <div className="flex flex-wrap gap-2">
       {/* ② 配列の中身を順番にボタンとして取り出す */}
       {periods.map((period) => (
