@@ -7,7 +7,7 @@ export function useNavigation() {
     const {t} = useLanguage();
 
     const navItems = [
-        {path:"/home",label: t("nav.home.title")},
+        {path:"/dashboard",label: t("nav.home.title")},
         {path:"/household",label: t("nav.household.title")},
         {path:"/simulation",label: t("nav.simulation.title")},
     ];

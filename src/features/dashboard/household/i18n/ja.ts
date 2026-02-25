@@ -1,5 +1,75 @@
 export default {
-    dashboard: {
-        
+    period: {
+      daily: "1日",
+      monthly: "1ヶ月",
+      yearly: "1年",
+      all: "累計",
+      label: "表示期間：",
+    },
+    summary: {
+      income: "収入",
+      expense: "支出",
+      surplus: "余剰資金",
+      fixedExpense: "固定費",
+      variableExpense: "変動費",
+      positive: "プラス収支",
+      negative: "マイナス収支",
+      dataCount: "{count}件のデータ",
+    },
+    form: {
+      amount: "金額",
+      category: "カテゴリ",
+      date: "日付",
+      month: "月",
+      memo: "メモ（任意）",
+      save: "保存",
+      delete: "削除",
+      memoPlaceholder: "例: スーパー、外食など",
+    },
+    categories: {
+      income: {
+        salary: "給与（会社からの給料）",
+        sideJob: "副業",
+        bonus: "賞与（ボーナス）",
+        investment: "投資収益",
+        other: "その他",
       },
-}
+      expense: {
+        rent: "家賃",
+        utilities: "水道光熱費",
+        communications: "通信費",
+        insurance: "保険料",
+        subscriptions: "サブスク",
+        food: "食費",
+        transportation: "交通費",
+        entertainment: "娯楽費",
+        medical: "医療費",
+        other: "その他",
+      
+      expenseCategory: {
+        rent: "固定費",
+        utilities: "固定費",
+        communications:"固定費",
+        insurance: "固定費",
+        subscriptions: "固定費",
+        food: "変動費",
+        transportation: "変動費",
+        entertainment: "変動費",
+        medical: "変動費",
+        other: "変動費",
+      }
+      },
+    },
+    actions: {
+      resetExpenses: "支出をリセット",
+      resetAll: "全データをリセット",
+      confirmResetExpenses: "全ての支出データを削除しますか？この操作は取り消せません。",
+      confirmResetAll: "全てのデータ（収入・支出・投資シミュレーション結果など）を削除しますか？この操作は取り消せません。",
+    },
+    messages: {
+      invalidAmount: "正しい金額を入力してください",
+      incomeAdded: "収入を追加しました",
+      expenseAdded: "支出を追加しました",
+      confirmDelete: "{item}（{amount}）を削除しますか？",
+    },
+};

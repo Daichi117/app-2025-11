@@ -1,4 +1,75 @@
 export default {
-    dashboard: {
+    period: {
+      daily: "Daily",
+      monthly: "Monthly",
+      yearly: "Yearly",
+      all: "All-time",
+      label: "View Period:",
+    },
+    summary: {
+      income: "Income",
+      expense: "Expenses",
+      surplus: "Surplus",
+      fixedExpense: "Fixed Expenses",
+      variableExpense: "Variable Expenses",
+      positive: "Budget Surplus",
+      negative: "Budget Deficit",
+      dataCount: "{count} entries",
+    },
+    form: {
+      amount: "Amount",
+      category: "Category",
+      date: "Date",
+      month: "Month",
+      memo: "Memo (Optional)",
+      save: "Save",
+      delete: "Delete",
+      memoPlaceholder: "e.g., Grocery, Dining out, etc.",
+    },
+    categories: {
+      income: {
+        salary: "Salary",
+        sideJob: "Side Job",
+        bonus: "Bonus",
+        investment: "Investment Income",
+        other: "Others",
       },
-}
+      expense: {
+        rent: "Rent",
+        utilities: "Utilities",
+        communications: "Communication",
+        insurance: "Insurance",
+        subscriptions: "Subscriptions",
+        food: "Food & Groceries",
+        transportation: "Transportation",
+        entertainment: "Entertainment",
+        medical: "Medical",
+        other: "Others",
+
+        expenseCategory: {
+          rent: "Fixed Expenses",
+          utilities: "Fixed Expenses",
+          communications: "Fixed Expenses",
+          insurance: "Fixed Expenses",
+          subscriptions: "Fixed Expenses",
+          food: "Variable Expenses",
+          transportation: "Variable Expenses",
+          entertainment: "Variable Expenses",
+          medical: "Variable Expenses",
+          other: "Variable Expenses",
+        }
+      },
+    },
+    actions: {
+      resetExpenses: "Reset Expenses",
+      resetAll: "Reset All Data",
+      confirmResetExpenses: "Are you sure you want to delete all expense data? This action cannot be undone.",
+      confirmResetAll: "Are you sure you want to delete all data (income, expenses, simulation results, etc.)? This action cannot be undone.",
+    },
+    messages: {
+      invalidAmount: "Please enter a valid amount",
+      incomeAdded: "Income added successfully",
+      expenseAdded: "Expense added successfully",
+      confirmDelete: "Are you sure you want to delete {item} ({amount})?",
+    },
+};
