@@ -7,6 +7,7 @@ export default {
       label: "表示期間：",
     },
     summary: {
+      total:"資産総額",
       income: "収入",
       expense: "支出",
       surplus: "余剰資金",
@@ -14,9 +15,9 @@ export default {
       variableExpense: "変動費",
       positive: "プラス収支",
       negative: "マイナス収支",
-      dataCount: "{count}件のデータ",
     },
     form: {
+      title: "収入と支出を記録",
       amount: "金額",
       category: "カテゴリ",
       date: "日付",
@@ -29,36 +30,29 @@ export default {
     categories: {
       income: {
         salary: "給与（会社からの給料）",
-        sideJob: "副業",
+        sidejob: "副業",
         bonus: "賞与（ボーナス）",
         investment: "投資収益",
         other: "その他",
       },
       expense: {
-        rent: "家賃",
-        utilities: "水道光熱費",
-        communications: "通信費",
-        insurance: "保険料",
-        subscriptions: "サブスク",
-        food: "食費",
-        transportation: "交通費",
-        entertainment: "娯楽費",
-        medical: "医療費",
-        other: "その他",
-      
-      expenseCategory: {
-        rent: "固定費",
-        utilities: "固定費",
-        communications:"固定費",
-        insurance: "固定費",
-        subscriptions: "固定費",
-        food: "変動費",
-        transportation: "変動費",
-        entertainment: "変動費",
-        medical: "変動費",
-        other: "変動費",
+        // 表示ラベルのグループ分け
+        fixed: {
+          rent: '家賃',
+          utilities: '水道光熱費',
+          communications: '通信費',
+          insurance: '保険料',
+          subscriptions: 'サブスク',
+          other: 'その他',
+        },
+        variable: {
+          food: '食費',
+          transportation: '交通費',
+          entertainment: '娯楽費',
+          medical: '医療費',
+          other: 'その他',
+        }
       }
-      },
     },
     actions: {
       resetExpenses: "支出をリセット",

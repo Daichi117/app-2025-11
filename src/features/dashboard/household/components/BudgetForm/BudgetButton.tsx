@@ -1,7 +1,8 @@
 import React from 'react';
-import { TimePeriod } from '../utils/constants';
 import { useLanguage } from '@/contexts/LanguageContext';
-
+ // 期間の型定義
+ export type TimePeriod = 'daily' | 'monthly' | 'yearly' | 'all'| 'custom';
+ 
 interface PeriodFilterProps {
   timePeriod: TimePeriod;
   setTimePeriod: (period: TimePeriod) => void;
