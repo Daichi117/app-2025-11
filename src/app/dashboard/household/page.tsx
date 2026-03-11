@@ -3,14 +3,11 @@
 import DashboardHeader from "@/components/navigation/dashboardHeader";
 import PeriodFilter from "@/features/dashboard/household/components/BudgetForm/BudgetButton";
 import { TimePeriod } from "@/features/dashboard/household/components/BudgetForm/BudgetButton";
-import BudgetTitle from "@/features/dashboard/household/components/BudgetForm/BudgetTitle";
-import BudgetIncomeForm from "@/features/dashboard/household/components/BudgetForm/BudgetIncomeForm";
-import BudgetExpenseForm from "@/features/dashboard/household/components/BudgetForm/BudgetExpenseForm";
 import { FormType } from "@/features/dashboard/household/types/form";
 import SummaryCard   from "@/features/dashboard/household/components/SummaryCard";
 import { useState } from "react";
 import { HomeNav } from "@/components/home/HomeNav";
-
+import BudgetContents from "@/features/dashboard/household/components/BudgetForm/BudgetContents";
 
 
 export default function HouseholdPage() {
@@ -28,40 +25,7 @@ export default function HouseholdPage() {
         </div>
       </div>
       <SummaryCard />
-
-      {/* BudgetTitle and forms: same width as dashboard header (max-w-7xl mx-auto px-6) */}
-      <BudgetTitle
-        activeForm={activeForm}
-        onFormChange={(form) => setActiveForm(form)}
-      />
-
-      <div className="transition-all duration-300">
-        {activeForm === "INCOME" && (
-          <div className="animate-in fade-in slide-in-from-bottom-4">
-            <BudgetIncomeForm />
-          </div>
-        )}
-
-        {activeForm === "FIXED" && (
-          <div className="animate-in fade-in slide-in-from-bottom-4">
-            <BudgetExpenseForm type="FIXED" />
-          </div>
-        )}
-
-        {activeForm === "VARIABLE" && (
-          <div className="animate-in fade-in slide-in-from-bottom-4">
-            <BudgetExpenseForm type="VARIABLE" />
-          </div>
-        )}
-
-        {activeForm === "NONE" && (
-          <div className="py-20 text-center border-2 border-dashed border-gray-200 rounded-3xl text-gray-400">
-            <p className="text-lg font-medium">
-              上のボタンから入力する項目を選んでください
-            </p>
-          </div>
-        )}
-      </div>
+      <BudgetContents />
     </main>
     </>
    

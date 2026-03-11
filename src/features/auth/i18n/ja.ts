@@ -12,7 +12,7 @@ export default {
         passwordMismatch: 'パスワードが一致しません',
         signupSuccess: '新規登録が完了しました！',
         loginSuccess: 'ログインが完了しました',
-        invalidEmail:"有効なメールアドレスを入力してください",
+        invalidEmail:"このメールアドレスは既に登録されています",
         passwordTooShort:"パスワードは8文字以上にしてください",
         nameRequired:"名前を入力してください"
       },

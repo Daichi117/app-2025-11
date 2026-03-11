@@ -60,7 +60,10 @@ export default {
     confirmResetAll: "Are you sure you want to delete all data (income, expenses, investment simulations, etc.)? This action cannot be undone.",
   },
   messages: {
+    invalidForm:"Please select the item to enter from the button above.",
     invalidAmount: "Please enter a valid amount",
+    zeroAmount:"Please enter other than 0",
+    invalideCategory:"Please choose the category",
     incomeAdded: "Income added successfully",
     expenseAdded: "Expense added successfully",
     confirmDelete: "Are you sure you want to delete {item} ({amount})?",

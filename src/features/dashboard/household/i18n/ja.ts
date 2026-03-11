@@ -61,7 +61,10 @@ export default {
       confirmResetAll: "全てのデータ（収入・支出・投資シミュレーション結果など）を削除しますか？この操作は取り消せません。",
     },
     messages: {
+      invalidForm:" 上のボタンから入力する項目を選んでください",
       invalidAmount: "正しい金額を入力してください",
+      zeroAmount:"ゼロ以上の値を入力してください",
+      invalidCategory:"カテゴリーを選択してください",
       incomeAdded: "収入を追加しました",
       expenseAdded: "支出を追加しました",
       confirmDelete: "{item}（{amount}）を削除しますか？",

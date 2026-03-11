@@ -1,117 +1,155 @@
-import { useState, useCallback, useEffect } from "react";
-import { useRouter } from "next/navigation";
+// hooks/useAuthForm.ts
 
-type TranslateFn = (key: string) => string;
+import { useState, useCallback, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { useAsyncState } from "@/components/household/hooks/useAsyncState"
+import { TranslateFn } from "../types"
 
-// ① フォームデータの型を明示（型安全性の向上）
 type FormData = {
-  email: string;
-  password: string;
-  confirmPassword: string;
-  name: string;
-};
+  email: string
+  password: string
+  confirmPassword: string
+  name: string
+}
 
-// ② UIの状態を明示（isLoadingとerrorを分離）
-type UiState = {
-  isLoading: boolean;
-  error: string | null;
-};
-
-// ③ バリデーションロジックを関数として切り出す（handleSubmitをスッキリさせる）
-function validateForm(isLogin: boolean, formData: FormData, t: TranslateFn): string | null {
-  // メールアドレスの簡易チェック
-  if (!formData.email.includes("@")) {
-    return t("login.login.invalidEmail")
-  }
-
-  // パスワードの最低文字数チェック
-  if (formData.password.length < 8) {
-    return t("login.login.passwordTooShort");
-  }
-
-  // 新規登録時のみ：パスワード一致チェック
-  if (!isLogin && formData.password !== formData.confirmPassword) {
-    return t("login.login.passwordMismatch");
-  }
-
-  // 新規登録時のみ：名前の入力チェック
-  if (!isLogin && !formData.name.trim()) {
-    return t("login.login.nameRequired");
-  }
-
-  return null; // エラーなし
+function validateForm(
+  isLogin: boolean,
+  formData: FormData,
+  t: TranslateFn
+): string | null {
+  if (!formData.email.includes("@")) return t("login.login.invalidEmail")
+  if (formData.password.length < 8) return t("login.login.passwordTooShort")
+  if (!isLogin && formData.password !== formData.confirmPassword) return t("login.login.passwordMismatch")
+  if (!isLogin && !formData.name.trim()) return t("login.login.nameRequired")
+  return null
 }
 
 export function useAuthForm(isLogin: boolean, t: TranslateFn) {
-  const router = useRouter();
+  const router = useRouter()
+
+  const { isLoading, isError, execute } = useAsyncState({
+    successMessage: isLogin
+      ? t("login.login.loginSuccess")
+      : t("login.login.signupSuccess"),
+    loadingMessage: isLogin
+      ? t("login.login.loginLoading")
+      : t("login.login.signupLoading"),
+  })
 
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
     confirmPassword: "",
     name: "",
-  });
+  })
 
-  const [uiState, setUiState] = useState<UiState>({
-    isLoading: false,
-    error: null,
-  });
 
-  useEffect(()=> {
-    setUiState({ isLoading: false, error: null});
-  },[isLogin]);
+
+  // const [validationError, setValidationError] = useState<string | null>(null)
+
+  useEffect(() => {
+    setFormData({ email: "", password: "", confirmPassword: "", name: "" })
+  }, [isLogin])
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+  }, [])
 
-    // ④ 入力中にエラーをリセット（UX改善：入力し直したらエラーが消える）
-    setUiState((prev) => ({ ...prev, error: null }));
-  }, []);
-
-  // ⑤ handleSubmit を useCallback で最適化
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    // ⑥ バリデーションを先に実行（関数に切り出したことでスッキリ）
-    const validationError = validateForm(isLogin, formData, t);
-    if (validationError) {
-      setUiState({ isLoading: false, error: validationError });
-      return;
+    console.log('╔════════════════════════════════════════╗');
+    console.log('║  フォーム送信開始                      ║');
+    console.log('╚════════════════════════════════════════╝');
+    console.log('モード:', isLogin ? 'ログイン' : '新規登録');
+    console.log('入力データ:', {
+      email: formData.email,
+      password: '***',
+      name: formData.name,
+    });
+
+    // ━━━ ① バリデーション ━━━
+    console.log('\n━━━ ① バリデーション ━━━');
+    const vError = validateForm(isLogin, formData, t)
+    
+    if (vError) {
+      console.log('❌ バリデーションエラー:', vError);
+      return
     }
+    console.log('✅ バリデーション通過');
 
-    setUiState({ isLoading: true, error: null });
-
-    try {
-      const endpoint = isLogin ? "/api/auth/Login" : "/api/auth/Register";
-
-      // ⑦ 送信データを変数に切り出す（bodyの中が長くなりすぎないように）
+    // ━━━ ② API呼び出し ━━━
+    await execute(async () => {
+      const endpoint = isLogin ? "/api/auth/Login" : "/api/auth/Register"
+      
       const payload = isLogin
         ? { email: formData.email, password: formData.password }
-        : { email: formData.email, password: formData.password, name: formData.name };
+        : { email: formData.email, password: formData.password, name: formData.name }
 
+      console.log('\n━━━ ② API呼び出し ━━━');
+      console.log('エンドポイント:', endpoint);
+      console.log('送信データ:', {
+        ...payload,
+        password: '***'
+      });
+
+      console.log('\n🌐 fetch実行中...');
       const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
-      });
+      })
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message);
+      // ━━━ ③ レスポンス受信 ━━━
+      console.log('\n━━━ ③ レスポンス受信 ━━━');
+      console.log('ステータスコード:', response.status);
+      console.log('OK?:', response.ok);
 
-      // ⑧ 成功後にフォームをリセット（セキュリティ：パスワードを残さない）
-      setFormData({ email: "", password: "", confirmPassword: "", name: "" });
+      const data = await response.json()
+      console.log('レスポンスデータ:', data);
 
+      // ━━━ ④ エラーチェック ━━━
+      console.log('\n━━━ ④ エラーチェック ━━━');
+      if (!response.ok) {
+        console.log('❌ APIエラー発生');
+        console.log('エラーメッセージ:', data.message);
+        throw new Error(data.message)
+      }
+      console.log('✅ API成功');
+
+      // ━━━ ⑤ 成功後の処理 ━━━
+      console.log('\n━━━ ⑤ 成功後の処理 ━━━');
+      // router.push("?mode=login")
+      // フォームをリセット
+      setFormData({ email: "", password: "", confirmPassword: "", name: "" })
+      console.log('フォームをリセットしました');
       if (isLogin) {
-        router.push("/dashboard");
-        router.refresh();
-      } 
-    } catch (err: unknown) {
-      // ⑨ err の型を unknown に（any より安全）
-      const message = err instanceof Error ? err.message : "予期しないエラーが発生しました";
-      setUiState({ isLoading: false, error: message });
-    }
-  }, [isLogin, formData, t, router]);
+        console.log('✅ ログイン成功');
+        console.log('→ ダッシュボードへリダイレクト');
+        router.push("/dashboard")
+        router.refresh()
+      } else if(!isLogin) {
+        console.log("新規登録成功");
+        router.push("?mode=login");
+        router.refresh()
+      }
+      else {
+        console.log('✅ 登録成功');
+        console.log('→ 登録完了フラグをON');
+      }
 
-  return { formData, uiState, handleChange, handleSubmit };
+      console.log('\n╔════════════════════════════════════════╗');
+      console.log('║  処理完了                              ║');
+      console.log('╚════════════════════════════════════════╝\n');
+    })
+  }, [isLogin, formData, t, router, execute])
+
+  return {
+    formData,
+    isLoading,
+    error: isError,
+    handleChange,
+    handleSubmit,
+  }
 }

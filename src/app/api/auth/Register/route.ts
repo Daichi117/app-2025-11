@@ -2,8 +2,10 @@ import { NextResponse } from "next/server";
 import { prisma } from "../../../../lib/prisma";
 import bcrypt from "bcryptjs";
 import { SignAccessToken } from "../../../../lib/auth";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export async function POST(req: Request) {
+  const {t} = useLanguage()
   try {
     // 1. フロント(HTML)から送られてきた値を受け取る
     const { name, email, password } = await req.json();
@@ -16,7 +18,7 @@ export async function POST(req: Request) {
     // 2. データベースに同じメールの人がいないか確認
     const exists = await prisma.user.findUnique({ where: { email } });
     if (exists) {
-      return NextResponse.json({ message: "このメールアドレスは既に登録されています" }, { status: 409 });
+      return NextResponse.json({ message:t("login.login.invalidEmail") }, { status: 409 });
     }
 
     // 3. パスワードを暗号化

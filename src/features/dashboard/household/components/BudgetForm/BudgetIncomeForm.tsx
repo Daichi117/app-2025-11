@@ -2,6 +2,7 @@
 import { INCOME_CATEGORIES } from "../../types/form"
 import { useState } from "react"
 import { useLanguage } from "@/contexts/LanguageContext"
+
 export default function BudgetIncomeForm() {
     
     const {t} = useLanguage();
