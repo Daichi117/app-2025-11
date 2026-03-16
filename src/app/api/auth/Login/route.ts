@@ -27,6 +27,7 @@ function validateInput(email?: string, password?: string) {
     return "login.login.emailInvalidFormat"
   }
 
+
   if (!password) {
     return "login.login.passwordTooShort"
   }

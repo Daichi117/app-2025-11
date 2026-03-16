@@ -21,7 +21,7 @@ export default function BudgetTitle({activeForm, onFormChange}: FormSelectorProp
   const baseBtn = "px-6 py-2 font-medium rounded-lg transition-all duration-200 shadow-sm border-2 text-sm";
 
   return (
-    <div className="mb-12">
+    <div className="mb-8">
       <div className="flex justify-between items-end mb-6">
         <div>
           <h2 className="text-2xl font-bold mb-1">{t("household.form.title")}</h2>

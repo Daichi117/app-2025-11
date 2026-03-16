@@ -4,7 +4,7 @@ import { NextRequest } from "next/server";
 import { cookies } from "next/headers";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
-const ACCESS_TOKEN_EXPIRATION = 60 * 60;
+const ACCESS_TOKEN_EXPIRATION = 60*60;
 
 type JWTPayload = { userId: string };
 

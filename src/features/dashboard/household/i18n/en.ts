@@ -7,6 +7,9 @@ export default {
     label: "Period: ",
     custom:  "Custom",  
     apply:   "Apply",
+    selectRange: "Select range",
+startDate:   "Start date",
+endDate:     "End date",
   },
   summary: {
     total: "Total Assets",

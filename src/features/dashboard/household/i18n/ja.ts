@@ -7,6 +7,9 @@ export default {
       label: "表示期間：",
       custom:  "カスタム",  // ← 追加
       apply:   "適用",   
+      selectRange: "期間を指定",
+      startDate:   "開始日",
+      endDate:     "終了日",
     },
     summary: {
       total:"資産総額",
