@@ -43,13 +43,10 @@ export function useAuthForm(isLogin: boolean, t: TranslateFn) {
     name: "",
   })
 
-
-
-  // const [validationError, setValidationError] = useState<string | null>(null)
-
   useEffect(() => {
     setFormData({ email: "", password: "", confirmPassword: "", name: "" })
   }, [isLogin])
+  
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target

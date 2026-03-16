@@ -1,7 +1,7 @@
 // app/dashboard/household/types/period.ts
 
 // ① 期間の種類
-export type PresetPeriod = 'daily' | 'monthly' | 'yearly' | 'all';
+export type PresetPeriod = 'monthly' | 'yearly' | 'all';
 
 // ② カスタム範囲
 export interface CustomPeriodRange {

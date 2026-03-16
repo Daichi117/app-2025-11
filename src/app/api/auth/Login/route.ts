@@ -1,46 +1,115 @@
-import { NextResponse } from "next/server";
-import { prisma } from "../../../../lib/prisma";
-import bcrypt from "bcryptjs";
-import { SignAccessToken } from "../../../../lib/auth"; // パスは環境に合わせて調整してください
+// app/api/auth/login/route.ts
 
-export async function POST(req: Request) {
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import bcrypt from "bcryptjs"
+import { signAccessToken } from "@/lib/auth"
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+/**
+ * エラーレスポンス共通関数
+ */
+function error(messageKey: string, status: number) {
+  return NextResponse.json({ messageKey }, { status })
+}
+
+/**
+ * 入力バリデーション
+ */
+function validateInput(email?: string, password?: string) {
+
+  if (!email) {
+    return "login.login.emailRequired"
+  }
+
+  if (!EMAIL_REGEX.test(email)) {
+    return "login.login.emailInvalidFormat"
+  }
+
+  if (!password) {
+    return "login.login.passwordTooShort"
+  }
+
+  return null
+}
+
+export async function POST(req: NextRequest) {
+
   try {
-    const { email, password } = await req.json();
-    
-    if (!email || !password) {
-      return NextResponse.json({ message: "Email and password required" }, { status: 400 });
+
+    // -----------------------------
+    // 1. リクエストボディ取得
+    // -----------------------------
+    const body = await req.json().catch(() => null)
+    const { email, password } = body ?? {}
+
+    // -----------------------------
+    // 2. バリデーション
+    // -----------------------------
+    const validationError = validateInput(email, password)
+
+    if (validationError) {
+      return error(validationError, 400)
     }
 
-    const user = await prisma.user.findUnique({ where: { email } });
+    // -----------------------------
+    // 3. ユーザー検索
+    // -----------------------------
+    const user = await prisma.user.findUnique({
+      where: { email }
+    })
+
     if (!user) {
-      return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
+      return error("login.login.invalidCredentials", 401)
     }
 
-    const valid = await bcrypt.compare(password, user.password_hash);
+    // -----------------------------
+    // 4. パスワード検証
+    // -----------------------------
+    const valid = await bcrypt.compare(password, user.password_hash)
+
     if (!valid) {
-      return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
+      return error("login.login.invalidCredentials", 401)
     }
 
-    // トークン生成
-    const token = SignAccessToken({ userId: user.id });
+    // -----------------------------
+    // 5. JWT生成
+    // -----------------------------
+    const token = signAccessToken({
+      userId: user.id
+    })
 
-    // レスポンス作成
-    const response = NextResponse.json({ ok: true });
+    // -----------------------------
+    // 6. レスポンス生成
+    // -----------------------------
+    const res = NextResponse.json(
+      {
+        ok: true,
+        messageKey: "login.login.loginSuccess"
+      },
+      { status: 200 }
+    )
 
-    // 【改善】NextResponseのヘルパーでCookie設定（読みやすく安全）
-    response.cookies.set({
+    // -----------------------------
+    // 7. Cookie保存
+    // -----------------------------
+    res.cookies.set({
       name: "token",
       value: token,
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 60 * 60, // 1時間
-      path: "/",
-    });
+      sameSite: "lax",
+      maxAge: 60 * 60,
+      path: "/"
+    })
 
-    return response;
+    return res
+
   } catch (err) {
-    console.error(err);
-    return NextResponse.json({ message: "Server error" }, { status: 500 });
+
+    console.error("login error:", err)
+
+    return error("login.login.serverError", 500)
   }
 }

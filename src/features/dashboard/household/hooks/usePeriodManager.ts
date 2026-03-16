@@ -12,8 +12,6 @@ export function usePeriodManager(initialPeriod: PresetPeriod = 'monthly') {
     // API (date-fns) を使えば、たった1行で開始日と終了日が取れる
     if (filter.type === 'preset') {
       switch (filter.period) {
-        case 'daily': 
-          return { label: format(today, 'yyyy/MM/dd'), startDate: startOfDay(today), endDate: endOfDay(today) };
         case 'monthly': 
           return { label: format(today, 'yyyy/MM'), startDate: startOfMonth(today), endDate: endOfMonth(today) };
         case 'yearly': 

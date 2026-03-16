@@ -1,10 +1,12 @@
 export default {
     period: {
-      daily: "1日",
-      monthly: "1ヶ月",
-      yearly: "1年",
+      daily: "今日",
+      monthly: "今月",
+      yearly: "今年",
       all: "累計",
       label: "表示期間：",
+      custom:  "カスタム",  // ← 追加
+      apply:   "適用",   
     },
     summary: {
       total:"資産総額",
@@ -67,6 +69,12 @@ export default {
       invalidCategory:"カテゴリーを選択してください",
       incomeAdded: "収入を追加しました",
       expenseAdded: "支出を追加しました",
+      saveSuccess:"保存しました",
       confirmDelete: "{item}（{amount}）を削除しますか？",
+        deleteSuccess: "削除しました",
+  deleteError: "削除に失敗しました",
+  loading: "読み込み中...",
+  noData: "データがありません",
+  itemCount: "件",
     },
 };

@@ -1,30 +1,40 @@
+// lib/auth.ts
 import jwt from "jsonwebtoken";
 import { NextRequest } from "next/server";
+import { cookies } from "next/headers";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
-const ACCESS_TOKEN_EXPIRATION = 60 * 60; 
+const ACCESS_TOKEN_EXPIRATION = 60 * 60;
 
-// 役割：ユーザーIDを「秘密の署名」付きの文字列（JWT）に変換する
-export function SignAccessToken(payload: object) {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: `${ACCESS_TOKEN_EXPIRATION}s` });
+type JWTPayload = { userId: string };
+
+// ── トークン生成 ──────────────────────────────
+export function signAccessToken(payload: JWTPayload): string {
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: ACCESS_TOKEN_EXPIRATION });
 }
 
-// 役割：送られてきたリクエストから「鍵（トークン）」を探し、中身（ユーザーID）を取り出す
-export function verifyAccessToken(req: Request | NextRequest) {
-  // 1. Authorizationヘッダーを確認（スマホアプリ等からの通信用）
+// ── Route Handler用（POST/GET APIで使う） ─────
+export function verifyAccessToken(req: NextRequest): JWTPayload {
+  // 1) Authorization ヘッダー（Bearer トークン）
+  console.log('🍪 受信Cookie一覧:', req.cookies.getAll())
+  console.log('🔑 Authヘッダー:', req.headers.get("authorization"))
   const authHeader = req.headers.get("authorization");
   if (authHeader?.startsWith("Bearer ")) {
-    const token = authHeader.substring(7);
-    return jwt.verify(token, JWT_SECRET) as any;
+    return jwt.verify(authHeader.substring(7), JWT_SECRET) as JWTPayload;
   }
 
-  // 2. クッキーを確認（ブラウザからの通信用）
-  const cookie = (req as Request).headers.get("cookie") ?? "";
-  const match = cookie.match(/(?:^|;)token=([^;]+)/);
-  const token = match ? match[1] : null;
-
+  // 2) Cookie
+  const token = req.cookies.get("token")?.value;
   if (!token) throw new Error("No token");
 
-  // 署名が正しいか検証し、中身（payload）を返す
-  return jwt.verify(token, JWT_SECRET) as any;
+  return jwt.verify(token, JWT_SECRET) as JWTPayload;
+}
+
+// ── Server Component / Server Action用 ───────
+export async function verifyAccessTokenServer(): Promise<JWTPayload> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
+  if (!token) throw new Error("No token");
+
+  return jwt.verify(token, JWT_SECRET) as JWTPayload;
 }
