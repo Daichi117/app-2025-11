@@ -9,7 +9,7 @@ type Summary = {
   surplus: number
 }
 
-export function useSummary(periodInfo: PeriodInfo) {
+export function useSummary(periodInfo: PeriodInfo,refetchTrigger:number) {
   const { t } = useLanguage()
   const [summary, setSummary] = useState<Summary>({ income: 0, expense: 0, surplus: 0 })
 
@@ -37,10 +37,9 @@ export function useSummary(periodInfo: PeriodInfo) {
 
       const income  = (incomeData.incomes   ?? []).reduce((sum: number, item: { amount: number }) => sum + item.amount, 0)
       const expense = (expenseData.expenses ?? []).reduce((sum: number, item: { amount: number }) => sum + item.amount, 0)
-
       setSummary({ income, expense, surplus: income - expense })
     })
-  }, [start, end])
+  }, [start, end,refetchTrigger])
 
   return { summary, isLoading }
 }

@@ -1,5 +1,8 @@
 export function formatAmount(amount: any): string {
-  if (amount >= 10_000) return `${(amount / 10_000).toFixed(1)}万円`
+  if (amount >= 10_000) {
+    const man = (amount / 10_000).toFixed(1)
+    return `${man.toLocaleString()}万円（￥${amount.toLocaleString()}）`
+  }
   return `${amount.toLocaleString()}円`
 }
 
@@ -22,6 +25,5 @@ export type budgetCategoryProps = {
   count: number
   total: number
   isExpanded: boolean
-  formatCount: (count: number) => string
   onClick: () => void
 }

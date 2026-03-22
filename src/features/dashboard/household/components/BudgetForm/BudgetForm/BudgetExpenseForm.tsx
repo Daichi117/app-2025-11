@@ -1,26 +1,49 @@
 "use client"
 import { useLanguage } from "@/contexts/LanguageContext"
-import { useBudgetForm } from "../../hooks/useBudgetForm"
-import { FIXED_EXPENSE_CATEGORIES, VARIABLE_EXPENSE_CATEGORIES } from "../../types/form"
-import { formatAmount } from "../../utils/useBudgetMoney"
+import { useBudgetForm } from "../../../hooks/useBudgetForm"
+import { FIXED_EXPENSE_CATEGORIES, VARIABLE_EXPENSE_CATEGORIES } from "../../../types/form"
+import { formatAmount } from "../../../utils/useBudgetMoney"
+import { useState } from "react"
+import { PlusCircle, RotateCcw } from "lucide-react"
+import { AddCategoryDialog } from "./BudgetDialog"
+import { useCategory } from "@/contexts/ CategoryContext" // ✅ スペース削除
 
 interface BudgetExpenseFormProps {
   type: 'FIXED' | 'VARIABLE'
-  onSaved?: () => void  // ← 追加
+  onSaved?: () => void
 }
 
 export default function BudgetExpenseForm({ type, onSaved }: BudgetExpenseFormProps) {
   const { t } = useLanguage()
 
-  const categories = type === 'FIXED' ? FIXED_EXPENSE_CATEGORIES : VARIABLE_EXPENSE_CATEGORIES
+  // ✅ expense用のカテゴリを取得
+  const { fixedCategories, variableCategories, addCustomCategory, resetCustomCategories, hasCustom } = useCategory()
+
+  const [isAdding, setIsAdding] = useState(false)
+
+  // ✅ Contextから取得（カスタム含む）
+  const categories = type === 'FIXED' ? fixedCategories : variableCategories
 
   const { formData, isLoading, handleChange, handleSubmit } = useBudgetForm(
     type,
     '/api/household/expense',
-    onSaved  // ← 追加
+    onSaved
   )
 
   const inputClass = "w-full px-4 py-3 border-2 border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-destructive focus:border-destructive transition-all"
+
+  // ✅ type をそのまま渡す
+  const handleAddCategory = (categoryName: string) => {
+    addCustomCategory(type, categoryName)
+    handleChange('category', categoryName)
+    setIsAdding(false)
+  }
+
+  // ✅ type をそのまま渡す
+  const handleResetCustom = () => {
+    resetCustomCategories(type)
+    handleChange('category', Object.keys(categories)[0])
+  }
 
   return (
     <div className="bg-white p-6 rounded-2xl border-2 border-destructive/20 shadow-sm">
@@ -46,9 +69,36 @@ export default function BudgetExpenseForm({ type, onSaved }: BudgetExpenseFormPr
 
         {/* カテゴリ */}
         <div>
-          <label className="block text-sm font-medium mb-1">
-            {t("household.form.category")}
-          </label>
+          <div className="flex items-center justify-between mb-1">
+            <label className="block text-sm font-medium">
+              {t("household.form.category")}
+            </label>
+            <div className="flex items-center gap-2">
+
+              {/* ✅ カスタムがある時だけリセットボタン */}
+              {hasCustom(type) && (
+                <button
+                  type="button"
+                  onClick={handleResetCustom}
+                  className="flex items-center gap-1 px-2 py-1 text-xs font-medium text-destructive border border-destructive rounded-md hover:bg-destructive/10 transition-colors"
+                >
+                  <RotateCcw size={12} />
+                  <span>{t("household.actions.resetCustom")}</span>
+                </button>
+              )}
+
+              {/* 追加ボタン */}
+              <button
+                type="button"
+                onClick={() => setIsAdding(true)}
+                className="flex items-center gap-1 px-2 py-1 text-xs font-medium text-destructive border border-destructive rounded-md hover:bg-destructive/10 transition-colors"
+              >
+                <PlusCircle size={14} />
+              </button>
+            </div>
+          </div>
+
+          {/* ✅ Contextのcategoriesを参照 */}
           <select
             value={formData.category}
             onChange={(e) => handleChange('category', e.target.value)}
@@ -105,6 +155,13 @@ export default function BudgetExpenseForm({ type, onSaved }: BudgetExpenseFormPr
           </button>
         </div>
       </form>
+
+      <AddCategoryDialog
+        isOpen={isAdding}
+        onClose={() => setIsAdding(false)}
+        onAdd={handleAddCategory}
+        type={type}
+      />
     </div>
   )
 }

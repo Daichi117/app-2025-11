@@ -7,7 +7,7 @@ import { useBudgetItems } from '../../../hooks/useBudgetItems'
 import BudgetCategoryRow from './BudgetCategoryRow'
 import BudgetItemTable from './BudgetTable'
 import toast from 'react-hot-toast'
-
+import { useCategory } from '@/contexts/ CategoryContext'
 type Props = {
   type: FormType
   refreshKey: number
@@ -17,11 +17,13 @@ export default function BudgetTab({ type, refreshKey }: Props) {
   const { t, language } = useLanguage()
   const { items, setItems } = useBudgetItems(type, refreshKey)  // ← データ取得
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null)
+  const { incomeCategories, fixedCategories, variableCategories } = useCategory()
 
+    // ✅ Contextから取得（カスタム含む）
   const categories =
-    type === 'INCOME'   ? INCOME_CATEGORIES :
-    type === 'FIXED'    ? FIXED_EXPENSE_CATEGORIES :
-                          VARIABLE_EXPENSE_CATEGORIES
+    type === 'INCOME'   ? incomeCategories :
+    type === 'FIXED'    ? fixedCategories :
+                          variableCategories
 
   // 削除処理
   const handleDelete = async (id: string, memo: string | null, amount: number) => {
@@ -45,10 +47,6 @@ export default function BudgetTab({ type, refreshKey }: Props) {
     }
   }
 
-  // 件数フォーマット
-  const formatCount = (count: number) =>
-    t("household.messages.itemCount").replace("{count}", String(count))
- 
   // 日付フォーマット
   const formatDate = (dateStr: string) =>
     new Date(dateStr).toLocaleDateString(language === 'ja' ? 'ja-JP' : 'en-US')
@@ -69,7 +67,6 @@ export default function BudgetTab({ type, refreshKey }: Props) {
               count={categoryItems.length}
               total={total}
               isExpanded={isExpanded}
-              formatCount={formatCount}
               onClick={() => setExpandedCategory(isExpanded ? null : key)}
             />
 

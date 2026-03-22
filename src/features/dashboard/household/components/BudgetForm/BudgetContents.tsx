@@ -1,8 +1,8 @@
 "use client"
 import { useState } from 'react'
 import BudgetTitle from './BudgetTitle'
-import BudgetIncomeForm from './BudgetIncomeForm'
-import BudgetExpenseForm from './BudgetExpenseForm'
+import BudgetIncomeForm from './BudgetForm/BudgetIncomeForm'
+import BudgetExpenseForm from './BudgetForm/BudgetExpenseForm'
 import BudgetTab from './BudgetTab/BudgetTab'
 import { FormType } from '../../types/form'
 import { useLanguage } from '@/contexts/LanguageContext'

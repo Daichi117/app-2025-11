@@ -10,7 +10,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <LanguageProvider translations={AppTranslations}>
             {children}
             <Toaster />
-         
           </LanguageProvider>
         </body>
       </html>

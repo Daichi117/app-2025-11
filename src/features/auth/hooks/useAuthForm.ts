@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useAsyncState } from "@/components/household/hooks/useAsyncState"
 import { TranslateFn } from "../types"
-
+import toast from "react-hot-toast"
 type FormData = {
   email: string
   password: string
@@ -103,15 +103,17 @@ export function useAuthForm(isLogin: boolean, t: TranslateFn) {
       console.log('ステータスコード:', response.status);
       console.log('OK?:', response.ok);
 
-      const data = await response.json()
+       const data = await response.json()
       console.log('レスポンスデータ:', data);
-
+      const messageKey = data.messageKey ?? "login.login.serverError";
       // ━━━ ④ エラーチェック ━━━
       console.log('\n━━━ ④ エラーチェック ━━━');
       if (!response.ok) {
         console.log('❌ APIエラー発生');
-        console.log('エラーメッセージ:', data.message);
-        throw new Error(data.message)
+        console.log('エラーメッセージ:', messageKey);
+          toast.error(messageKey)
+        throw new Error(messageKey)
+      
       }
       console.log('✅ API成功');
 

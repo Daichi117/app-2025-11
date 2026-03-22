@@ -3,7 +3,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import {  verifyAccessToken } from '@/lib/auth';  // ← 変更
 import { prisma } from '@/lib/prisma';
-import { SearchParams } from 'next/dist/server/request/search-params';
 
 export async function POST(request: NextRequest) {
   try {
@@ -97,12 +96,10 @@ export async function GET(request: NextRequest) {
     } catch {
       return NextResponse.json({ message: '認証が必要です' }, { status: 401 })
     }
-
     // 期間フィルター（なければ全件取得）
     const { searchParams } = new URL(request.url)
     const startDate = searchParams.get('startDate')
     const endDate = searchParams.get('endDate')
-
     const incomes = await prisma.income.findMany({
       where: {
         user_id: payload.userId,
@@ -117,8 +114,10 @@ export async function GET(request: NextRequest) {
     })
 
     return NextResponse.json({ incomes })
+  
 
   } catch (error) {
     return NextResponse.json({ message: 'サーバーエラー' }, { status: 500 })
   }
+  
 }

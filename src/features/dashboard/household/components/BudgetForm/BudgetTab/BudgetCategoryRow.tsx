@@ -1,14 +1,14 @@
 // components/BudgetCategoryRow.tsx
 import { formatAmount, budgetCategoryProps } from "../../../utils/useBudgetMoney"
-
-export default function BudgetCategoryRow({
+import { useLanguage } from "@/contexts/LanguageContext"
+export default function   BudgetCategoryRow({
   label,
   count,
   total,
   isExpanded,
-  formatCount,
   onClick,
 }: budgetCategoryProps) {  // ← 戻り値ではなくPropsの型
+  const {t} = useLanguage()
   return (
     <div
       className="p-5 flex justify-between items-center cursor-pointer hover:bg-muted/30 transition-colors"
@@ -17,7 +17,7 @@ export default function BudgetCategoryRow({
       <div className="flex items-center gap-4">
         <span className="font-medium text-lg">{label}</span>
         <span className="text-sm text-muted-foreground">
-          （{formatCount(count)}）
+       {t("household.messages.itemCount").replace("{count}", `${count}`)}
         </span>
       </div>
       <div className="flex items-center gap-4">

@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
     })
 
     if (!user) {
-      return error("login.login.invalidCredentials", 401)
+      return error("login.emailInvalidFormat", 401)
     }
 
     // -----------------------------

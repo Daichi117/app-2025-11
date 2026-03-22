@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation"
 import { useLanguage } from "@/contexts/LanguageContext"
 import { useAsyncState } from "@/components/household/hooks/useAsyncState"
 import { FormType } from "../types/form"
+import { useRefetch } from "@/contexts/RefetchContext"
 import toast from "react-hot-toast"
 
 type FormData = {
@@ -16,7 +17,7 @@ function validateForm(formData: FormData, t: (key: string) => string): string | 
   if (!formData.amount || !formData.amount.trim()) return t("household.messages.invalidAmount")
   const numAmount = Number(formData.amount)
   if (isNaN(numAmount) || numAmount <= 0) return t("household.messages.zeroAmount")
-  if (!formData.category) return t("household.messages.invalidCategory")
+  // if (!formData.category || !formData.category.trim()) return t("household.messages.invalidCategory")
   if (!formData.date) return t("household.messages.invalidDate")
   return null
 }
@@ -28,7 +29,7 @@ export function useBudgetForm(
 ) {
   const router = useRouter()
   const { t } = useLanguage()
-
+  const {triggerRefetch} = useRefetch();
   const { isLoading, execute } = useAsyncState({
     successMessage: t("household.messages.saveSuccess"),
     loadingMessage: t("household.messages.saving"),
@@ -52,7 +53,6 @@ export function useBudgetForm(
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault()
-
     const vError = validateForm(formData, t)
     if (vError) {
       toast.error(vError)
@@ -77,13 +77,14 @@ export function useBudgetForm(
         body: JSON.stringify(payload),
         credentials: 'include'
       })
+      triggerRefetch()
 
       const text = await response.text()
       const data = text ? JSON.parse(text) : {}
 
-      // if (!response.ok) {
-      //   throw new Error(data.message || '保存に失敗しました')
-      // }
+      if (!response.ok) {
+        throw new Error(data.message || '保存に失敗しました')
+      }
 
       setFormData({
         amount: "",

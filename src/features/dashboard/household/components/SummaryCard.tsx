@@ -1,12 +1,12 @@
 "use client"
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useLanguage } from '@/contexts/LanguageContext'
 import PeriodFilter, { TimePeriod } from './BudgetForm/BudgetButton'
 import { usePeriodManager } from '../hooks/usePeriodManager'
 import { useSummary } from '../hooks/useSummary'
 import { formatAmount } from '../utils/useBudgetMoney'
 import { PresetPeriod } from '../types/period'  // ← 追加
-
+import { useRefetch } from '@/contexts/RefetchContext'
 export default function SummaryCard() {
   const { t} = useLanguage()
 
@@ -17,7 +17,8 @@ export default function SummaryCard() {
     timePeriod === 'custom' ? 'monthly' : timePeriod  // ← 追加
 
   const { periodInfo, setFilter } = usePeriodManager(presetPeriod)  // ← PresetPeriod を渡す
-  const { summary} = useSummary(periodInfo)
+  const {refetchTrigger} = useRefetch()
+  const { summary } = useSummary(periodInfo,refetchTrigger) 
 
   const summaryItems = [
     {
@@ -60,7 +61,7 @@ export default function SummaryCard() {
   }}
 />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 mb-6">
         {summaryItems.map(item => (
           <div key={item.id} className="bg-white rounded-lg p-6 border shadow-sm">
             <div className="text-sm text-muted-foreground mb-2">

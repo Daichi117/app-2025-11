@@ -1,23 +1,39 @@
 "use client"
-import { INCOME_CATEGORIES } from "../../types/form"
+import { INCOME_CATEGORIES } from "../../../types/form"
 import { useLanguage } from "@/contexts/LanguageContext"
-import { useBudgetForm } from "../../hooks/useBudgetForm"
-import { formatAmount } from "../../utils/useBudgetMoney"
+import { useBudgetForm } from "../../../hooks/useBudgetForm"
+import { formatAmount } from "../../../utils/useBudgetMoney"
+import { useState } from "react"
+import { PlusCircle, RotateCcw } from "lucide-react"
+import { AddCategoryDialog } from "./BudgetDialog"
+import { useCategory } from "@/contexts/ CategoryContext"// ✅ スペース削除
 
 interface BudgetIncomeFormProps {
-  onSaved?: () => void  // ← 追加
+  onSaved?: () => void
 }
 
 export default function BudgetIncomeForm({ onSaved }: BudgetIncomeFormProps) {
   const { t } = useLanguage()
-
   const { formData, isLoading, handleChange, handleSubmit } = useBudgetForm(
     'INCOME',
     '/api/household/income',
-    onSaved  // ← 追加
+    onSaved
   )
+  const { incomeCategories, addCustomCategory, resetCustomCategories, hasCustom } = useCategory()
+  const [isAdding, setIsAdding] = useState(false)
 
   const inputClass = "w-full px-4 py-3 border-2 border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary transition-all"
+
+      const handleAddCategory = (categoryName: string) => {
+        addCustomCategory("INCOME", categoryName)
+        handleChange('category', categoryName)
+        setIsAdding(false)
+      }
+
+  const handleResetCustom = () => {
+    resetCustomCategories("INCOME")
+    handleChange('category', Object.keys(INCOME_CATEGORIES)[0])
+  }
 
   return (
     <div className="bg-white p-6 rounded-2xl border-2 border-secondary/20 shadow-sm">
@@ -43,16 +59,43 @@ export default function BudgetIncomeForm({ onSaved }: BudgetIncomeFormProps) {
 
         {/* カテゴリ */}
         <div>
-          <label className="block text-sm font-medium mb-1">
-            {t("household.form.category")}
-          </label>
+          <div className="flex items-center justify-between mb-1">
+            <label className="block text-sm font-medium">
+              {t("household.form.category")}
+            </label>
+            <div className="flex items-center gap-2">
+
+              {/* ✅ カスタムがある時だけリセットボタン */}
+              {hasCustom("INCOME") && (
+                <button
+                  type="button"
+                  onClick={handleResetCustom}
+                  className="flex items-center gap-1 px-2 py-1 text-xs font-medium text-destructive border border-destructive rounded-md hover:bg-destructive/10 transition-colors"
+                >
+                  <RotateCcw size={12} />
+                  <span>{t("household.actions.resetCustom")}</span>
+                </button>
+              )}
+
+              {/* ✅ 追加ボタン */}
+              <button
+                type="button"
+                onClick={() => setIsAdding(true)}
+                className="flex items-center gap-1 px-2 py-1 text-xs font-medium text-secondary border border-secondary rounded-md hover:bg-secondary/10 transition-colors"
+              >
+                <PlusCircle size={14} />
+              </button>
+            </div>
+          </div>
+
+          {/* ✅ customCategoriesは不要、incomeCategories に全部入っている */}
           <select
             value={formData.category}
             onChange={(e) => handleChange('category', e.target.value)}
             disabled={isLoading}
             className={inputClass}
           >
-            {Object.entries(INCOME_CATEGORIES).map(([key, label]) => (
+            {Object.entries(incomeCategories).map(([key, label]) => (
               <option key={key} value={key}>{t(label)}</option>
             ))}
           </select>
@@ -102,6 +145,13 @@ export default function BudgetIncomeForm({ onSaved }: BudgetIncomeFormProps) {
           </button>
         </div>
       </form>
+
+      <AddCategoryDialog
+        isOpen={isAdding}
+        onClose={() => setIsAdding(false)}
+        onAdd={handleAddCategory}
+        type="INCOME"
+      />
     </div>
   )
 }
