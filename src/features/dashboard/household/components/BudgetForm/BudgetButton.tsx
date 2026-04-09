@@ -9,7 +9,7 @@ interface PeriodFilterProps {
   onCustomRange?: (start: string, end: string) => void  // ← カスタム期間を親に渡す
 }
 
-export default function PeriodFilter({ timePeriod, setTimePeriod, onCustomRange }: PeriodFilterProps) {
+export default function BudgetButton({ timePeriod, setTimePeriod, onCustomRange }: PeriodFilterProps) {
   const { t } = useLanguage();
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
@@ -26,10 +26,10 @@ export default function PeriodFilter({ timePeriod, setTimePeriod, onCustomRange 
     if (startDate > endDate) return  // 開始日が終了日より後の場合は無視
     onCustomRange?.(startDate, endDate)
   }
-
+    
   return (
     <>
-      <span className='font-semibold'>{t("household.period.label")}</span>
+      <span className='font-semibold text-sm'>{t("household.period.label")}</span>
       <div className="flex flex-wrap gap-2">
         {periods.map((period) => (
           <button

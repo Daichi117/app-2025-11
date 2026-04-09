@@ -7,7 +7,7 @@ import { AuthInput }       from "./AuthInput";
 import Link                from "next/link";
 
 export function AuthForm() {
-  const { t }          = useLanguage();
+  useLanguage();
   const searchParams   = useSearchParams();
 
   // ── URLパラメータからログイン/登録モードを判定 ──
@@ -15,6 +15,12 @@ export function AuthForm() {
   // /login?mode=login  → login（デフォルト）
   const mode    = searchParams.get("mode") === "signup" ? "signup" : "login";
   const isLogin = mode === "login";
+
+  return <AuthFormPanel key={mode} isLogin={isLogin} />;
+}
+
+function AuthFormPanel({ isLogin }: { isLogin: boolean }) {
+  const { t } = useLanguage();
 
   // ── hookから必要なものを受け取る ──
   // uiState → isLoadingとuiStateに変更（useAuthFormの返り値に合わせる）

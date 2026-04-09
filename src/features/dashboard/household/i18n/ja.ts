@@ -1,4 +1,4 @@
-export default {
+const ja = {
   period: {
     daily: "今日",
     monthly: "今月",
@@ -67,6 +67,7 @@ export default {
     resetExpenses: "支出をリセット",
     resetAll: "全データをリセット",
     resetCustom: "カスタムをリセット",       // ✅ 追加
+    removeSelectedCustom: "選択カテゴリを削除",
     confirmResetExpenses: "全ての支出データを削除しますか？この操作は取り消せません。",
     confirmResetAll: "全てのデータ（収入・支出・投資シミュレーション結果など）を削除しますか？この操作は取り消せません。",
     // カテゴリ
@@ -88,6 +89,7 @@ export default {
     incomeAdded: "収入を追加しました",
     expenseAdded: "支出を追加しました",
     saveSuccess: "保存しました",
+    saveError: "保存に失敗しました",
     // 削除
     confirmDelete: "{item}（{amount}）を削除しますか？",
     deleteSuccess: "削除しました",
@@ -97,4 +99,16 @@ export default {
     noData: "データがありません",
     itemCount: "{count}件",
   },
+
+  /** Route Handler 用（createServerTranslator） */
+  api: {
+    authRequired: "認証が必要です",
+    requiredFields: "必須項目を入力してください",
+    amountPositive: "金額は0より大きい値を入力してください",
+    typeInvalid: "支出区分は固定費または変動費である必要があります",
+    notFound: "見つかりません",
+    serverError: "サーバーエラー",
+  },
 }
+
+export default ja;

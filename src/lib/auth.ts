@@ -4,7 +4,7 @@ import { NextRequest } from "next/server";
 import { cookies } from "next/headers";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
-const ACCESS_TOKEN_EXPIRATION = 100*100;
+const ACCESS_TOKEN_EXPIRATION = 60 * 60;
 
 type JWTPayload = { userId: string };
 
@@ -15,9 +15,6 @@ export function signAccessToken(payload: JWTPayload): string {
 
 // ── Route Handler用（POST/GET APIで使う） ─────
 export function verifyAccessToken(req: NextRequest): JWTPayload {
-  // 1) Authorization ヘッダー（Bearer トークン）
-  console.log('🍪 受信Cookie一覧:', req.cookies.getAll())
-  console.log('🔑 Authヘッダー:', req.headers.get("authorization"))
   const authHeader = req.headers.get("authorization");
   if (authHeader?.startsWith("Bearer ")) {
     return jwt.verify(authHeader.substring(7), JWT_SECRET) as JWTPayload;

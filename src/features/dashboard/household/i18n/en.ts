@@ -1,4 +1,4 @@
-export default {
+const en = {
   period: {
     daily: "Daily",
     monthly: "Monthly",
@@ -61,6 +61,8 @@ endDate:     "End date",
   actions: {
     resetExpenses: "Reset Expenses",
     resetAll: "Reset All Data",
+    resetCustom: "Reset custom categories",
+    removeSelectedCustom: "Remove selected category",
     confirmResetExpenses: "Delete all expense data? This action cannot be undone.",
     confirmResetAll: "Delete all data (income, expenses, investment simulations, etc.)? This action cannot be undone.",
     addCategory:"Add category",
@@ -77,6 +79,7 @@ endDate:     "End date",
     incomeAdded: "Income added",
     expenseAdded: "Expense added",
     saveSuccess: "Saved successfully",
+    saveError: "Failed to save",
     saving: "Saving...",
     confirmDelete: "Delete {item} ({amount})?",
     deleteSuccess: "Deleted successfully",
@@ -85,4 +88,15 @@ endDate:     "End date",
     noData: "No data available",
     itemCount: "",  // 英語は "3 items" のように前置するので空
   },
+
+  api: {
+    authRequired: "Authentication required",
+    requiredFields: "Please fill in all required fields",
+    amountPositive: "Amount must be greater than zero",
+    typeInvalid: "Expense type must be fixed or variable",
+    notFound: "Not found",
+    serverError: "Server error",
+  },
 };
+
+export default en;

@@ -34,7 +34,7 @@ export default function BudgetItemTable({ items,formatDate, onDelete,}: budgetTa
                 <button
                   onClick={(e) => {
                     e.stopPropagation()
-                    onDelete(item.id, item.memo, item.amount)
+                    onDelete(item.id, item.memo, item.amount, item.category)
                   }}
                   className="px-2 py-1 text-xs bg-destructive/10 text-destructive hover:bg-destructive/20 rounded transition-colors"
                 >

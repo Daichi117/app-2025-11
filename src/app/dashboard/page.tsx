@@ -1,12 +1,5 @@
-import { HomeNav } from '@/components/home/HomeNav'
-import DashboardHeader from '@/components/navigation/dashboardHeader'
-import React from 'react'
+import HomeDashboard from "@/features/dashboard/home/components/HomeDashboard";
 
-export default function page() {
-  return (
-    <div>
-      <HomeNav isLoggedIn={true} />
-      <DashboardHeader />
-    </div>
-  )
+export default function DashboardPage() {
+  return <HomeDashboard />;
 }

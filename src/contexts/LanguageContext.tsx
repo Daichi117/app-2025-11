@@ -4,18 +4,20 @@ import React, {
   createContext,
   useContext,
   useState,
+  useEffect,
   ReactNode,
   useCallback,
   useMemo,
 } from "react";
 import { Language } from "../i18n/types";
+import {
+  flattenTranslations,
+  type TranslationValue,
+} from "../i18n/flattenTranslations";
 
 /* -----------------------------------------------------------
    1. 型定義：データの「形」を決める
    ----------------------------------------------------------- */
-// 翻訳データは { login: "こんにちは" } のような1層のものから
-// { auth: { login: "..." } } のように深いものまであるので、再帰的な型にしています
-type TranslationValue = string | { [key: string]: TranslationValue };
 
 // 全言語（ja, enなど）をまとめたデータの型です
 type Translations = Record<Language, TranslationValue | undefined>;
@@ -34,39 +36,7 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | null>(null);
 
 /* -----------------------------------------------------------
-   3. ロジック関数：階層構造を「平坦」にする
-   ----------------------------------------------------------- */
-/**
- * { a: { b: "hello" } } を { "a.b": "hello" } に変換します。
- * 理由は、t("a.b") と指定したときに、一発でデータを見つけやすくするためです。
- */
-function flattenTranslations(
-  node: TranslationValue | undefined,
-  prefix = ""
-): Record<string, string> {
-  const out: Record<string, string> = {};
-  if (typeof node === "string") {
-    out[prefix] = node;
-    return out;
-  }
-  if (!node || typeof node !== "object") return out;
-
-  for (const key of Object.keys(node)) {
-    const val = node[key];
-    // 親のキーと自分のキーをドット(.)でつなぎます
-    const nextKey = prefix ? `${prefix}.${key}` : key;
-    if (typeof val === "string") {
-      out[nextKey] = val; // 文字なら確定
-    } else {
-      // オブジェクトなら、さらに奥まで探しに行きます（再帰処理）
-      Object.assign(out, flattenTranslations(val, nextKey));
-    }
-  }
-  return out;
-}
-
-/* -----------------------------------------------------------
-   4. Provider：機能を「提供」する親コンポーネント
+   3. Provider：機能を「提供」する親コンポーネント
    ----------------------------------------------------------- */
 export function LanguageProvider({
   children,
@@ -82,10 +52,16 @@ export function LanguageProvider({
   // 【State】現在の言語を管理。setLanguageを呼ぶと、これを使う全画面が再描画されます。
   const [language, setLanguage] = useState<Language>(defaultLanguage);
 
+  // API Route 用: サーバーが言語を解決できるよう Cookie に同期
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.cookie = `locale=${language};path=/;max-age=${60 * 60 * 24 * 365};SameSite=Lax`;
+  }, [language]);
+
   // 【useMemo】重い処理（平坦化）の結果を保存します。
   // translations（元の辞書）が変わらない限り、再計算しません。
   const flatByLang = useMemo(() => {
-    const map: Record<Language, Record<string, string>> = {} as any;
+    const map = {} as Record<Language, Record<string, string>>;
     (Object.keys(translations) as Language[]).forEach((lang) => {
       map[lang] = flattenTranslations(translations[lang]);
     });
@@ -117,7 +93,7 @@ export function LanguageProvider({
 }
 
 /* -----------------------------------------------------------
-   5. カスタムフック：使う側の「窓口」
+   4. カスタムフック：使う側の「窓口」
    ----------------------------------------------------------- */
 export function useLanguage(): LanguageContextType {
   const ctx = useContext(LanguageContext);

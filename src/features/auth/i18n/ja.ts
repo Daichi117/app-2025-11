@@ -21,6 +21,7 @@ export default {
 
     // ここから追加
     emailRequired: "メールアドレスを入力してください",
+    passwordRequired: "パスワードを入力してください",
     emailInvalidFormat: "メールアドレスの形式が正しくありません",
     invalidCredentials: "メールアドレスかパスワードが正しくありません",
     incorrectPassword: "パスワードが正しくありません",

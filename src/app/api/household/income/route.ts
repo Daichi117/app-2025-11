@@ -1,14 +1,16 @@
 // app/api/household/income/route.ts
 
 import { NextRequest, NextResponse } from 'next/server';
-import {  verifyAccessToken } from '@/lib/auth';  // ← 変更
+import { verifyAccessToken } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { getServerTranslator } from '@/i18n/serverTranslate';
 
 export async function POST(request: NextRequest) {
+  const t = getServerTranslator(request);
   try {
     console.log('━━━ 収入API: POST開始 ━━━');
-    
-    // ① 認証チェック（JWTトークンを検証）
+
+    // 設計意図: 収入作成は必ず「認証 -> バリデーション -> 永続化」の順に通す。
     let payload;
     try {
       payload = verifyAccessToken(request);
@@ -16,7 +18,7 @@ export async function POST(request: NextRequest) {
     } catch (error) {
       console.log('❌ 認証エラー:', error);
       return NextResponse.json(
-        { message: '認証が必要です' },
+        { message: t('household.api.authRequired'), messageKey: 'household.api.authRequired' },
         { status: 401 }
       );
     }
@@ -25,6 +27,7 @@ export async function POST(request: NextRequest) {
     console.log('✅ ユーザーID:', userId);
     
     // ② リクエストボディを取得
+    // 型安全はランタイムで担保するため、受信後に必須項目を検証する。
     const body = await request.json();
     console.log('📦 受信データ:', body);
     
@@ -33,15 +36,15 @@ export async function POST(request: NextRequest) {
     // ③ バリデーション
     if (!amount || !category || !date) {
       return NextResponse.json(
-        { message: '必須項目を入力してください' },
+        { message: t('household.api.requiredFields'), messageKey: 'household.api.requiredFields' },
         { status: 400 }
       );
     }
-    
+
     if (typeof amount !== 'number' || amount <= 0) {
       console.log('❌ バリデーションエラー: 金額が不正');
       return NextResponse.json(
-        { message: '金額は0より大きい値を入力してください' },
+        { message: t('household.api.amountPositive'), messageKey: 'household.api.amountPositive' },
         { status: 400 }
       );
     }
@@ -49,6 +52,7 @@ export async function POST(request: NextRequest) {
     console.log('✅ バリデーション成功');
     
     // ④ データベースに保存
+    // user_id はトークン由来のみを使い、他ユーザーIDのなりすまし入力を防ぐ。
     const income = await prisma.income.create({
       data: {
         user_id: userId,  // ← verifyAccessTokenから取得
@@ -65,7 +69,8 @@ export async function POST(request: NextRequest) {
     // ⑤ レスポンスを返す
     return NextResponse.json(
       {
-        message: '収入を追加しました',
+        message: t('household.messages.incomeAdded'),
+        messageKey: 'household.messages.incomeAdded',
         income: {
           id: income.id,
           amount: income.amount,
@@ -82,21 +87,24 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json(
       {
-        message: error instanceof Error ? error.message : 'サーバーエラー',
+        message: t('household.api.serverError'),
+        messageKey: 'household.api.serverError',
       },
       { status: 500 }
     );
   }
 }
 export async function GET(request: NextRequest) {
+  const t = getServerTranslator(request);
   try {
     let payload
     try {
       payload = verifyAccessToken(request)
     } catch {
-      return NextResponse.json({ message: '認証が必要です' }, { status: 401 })
+      return NextResponse.json({ message: t('household.api.authRequired'), messageKey: 'household.api.authRequired' }, { status: 401 })
     }
     // 期間フィルター（なければ全件取得）
+    // この分岐で「集計の期間」と「一覧の期間」を揃えやすくしている。
     const { searchParams } = new URL(request.url)
     const startDate = searchParams.get('startDate')
     const endDate = searchParams.get('endDate')
@@ -116,8 +124,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ incomes })
   
 
-  } catch (error) {
-    return NextResponse.json({ message: 'サーバーエラー' }, { status: 500 })
+  } catch {
+    return NextResponse.json({ message: t('household.api.serverError'), messageKey: 'household.api.serverError' }, { status: 500 })
   }
-  
+
 }

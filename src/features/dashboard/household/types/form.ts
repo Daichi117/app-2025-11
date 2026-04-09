@@ -1,7 +1,11 @@
 // app/dashboard/household/utils/constants.ts
 
+// このファイルは「カテゴリの正規キー」を定義する場所。
+// UI表示文言ではなくキーを共通化することで、FE・API・DBのズレを減らす。
 export type IncomeCategory = 'SALARY' | 'SIDEJOB' | 'BONUS' | 'INVESTMENTS' | 'OTHER';
 export type FormType = 'NONE' | 'INCOME' | 'FIXED' | 'VARIABLE';
+
+// value は翻訳キー。実際の表示文言は LanguageContext の t() が担当する。
 export const INCOME_CATEGORIES: Record<IncomeCategory,string> = {
   SALARY: 'household.categories.income.salary',
   SIDEJOB: 'household.categories.income.sidejob',
@@ -33,6 +37,7 @@ export type VariableExpenseCategory =
   | 'MEDICAL'        // 医療費
   | 'OTHER';         // その他
 
+// 収入カテゴリと同じく、表示用文字列ではなく翻訳キーを保持する。
 export const VARIABLE_EXPENSE_CATEGORIES: Record<VariableExpenseCategory,string> = {
   FOOD: 'household.categories.expense.variable.food',
   TRANSPORTATION: 'household.categories.expense.variable.transportation',
@@ -42,4 +47,3 @@ export const VARIABLE_EXPENSE_CATEGORIES: Record<VariableExpenseCategory,string>
 };
 
 export type ExpenseCategory = FixedExpenseCategory | VariableExpenseCategory
-

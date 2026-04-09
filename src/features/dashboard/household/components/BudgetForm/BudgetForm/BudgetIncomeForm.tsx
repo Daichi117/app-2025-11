@@ -7,6 +7,7 @@ import { useState } from "react"
 import { PlusCircle, RotateCcw } from "lucide-react"
 import { AddCategoryDialog } from "./BudgetDialog"
 import { useCategory } from "@/contexts/ CategoryContext"// ✅ スペース削除
+import toast from "react-hot-toast"
 
 interface BudgetIncomeFormProps {
   onSaved?: () => void
@@ -19,20 +20,30 @@ export default function BudgetIncomeForm({ onSaved }: BudgetIncomeFormProps) {
     '/api/household/income',
     onSaved
   )
-  const { incomeCategories, addCustomCategory, resetCustomCategories, hasCustom } = useCategory()
+  const { incomeCategories, addCustomCategory, removeCustomCategory, isCustomCategory } = useCategory()
   const [isAdding, setIsAdding] = useState(false)
+  const selectedCategoryIsCustom = isCustomCategory("INCOME", formData.category)
 
   const inputClass = "w-full px-4 py-3 border-2 border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary transition-all"
 
-      const handleAddCategory = (categoryName: string) => {
-        addCustomCategory("INCOME", categoryName)
-        handleChange('category', categoryName)
-        setIsAdding(false)
-      }
+  const handleAddCategory = async (categoryName: string) => {
+    const ok = await addCustomCategory("INCOME", categoryName)
+    if (!ok) {
+      toast.error(t("household.messages.saveError"))
+      return
+    }
+    handleChange("category", categoryName)
+    setIsAdding(false)
+  }
 
-  const handleResetCustom = () => {
-    resetCustomCategories("INCOME")
-    handleChange('category', Object.keys(INCOME_CATEGORIES)[0])
+  const handleRemoveSelectedCustom = async () => {
+    if (!selectedCategoryIsCustom) return
+    const ok = await removeCustomCategory("INCOME", formData.category)
+    if (!ok) {
+      toast.error(t("household.messages.deleteError"))
+      return
+    }
+    handleChange("category", Object.keys(INCOME_CATEGORIES)[0])
   }
 
   return (
@@ -65,15 +76,15 @@ export default function BudgetIncomeForm({ onSaved }: BudgetIncomeFormProps) {
             </label>
             <div className="flex items-center gap-2">
 
-              {/* ✅ カスタムがある時だけリセットボタン */}
-              {hasCustom("INCOME") && (
+              {/* 選択中カテゴリがカスタムの時だけ削除ボタン */}
+              {selectedCategoryIsCustom && (
                 <button
                   type="button"
-                  onClick={handleResetCustom}
+                  onClick={handleRemoveSelectedCustom}
                   className="flex items-center gap-1 px-2 py-1 text-xs font-medium text-destructive border border-destructive rounded-md hover:bg-destructive/10 transition-colors"
                 >
                   <RotateCcw size={12} />
-                  <span>{t("household.actions.resetCustom")}</span>
+                  <span>{t("household.actions.removeSelectedCustom")}</span>
                 </button>
               )}
 

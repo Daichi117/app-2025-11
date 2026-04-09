@@ -1,6 +1,4 @@
-// hooks/useAuthForm.ts
-
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { useAsyncState } from "@/components/household/hooks/useAsyncState"
 import { TranslateFn } from "../types"
@@ -43,11 +41,6 @@ export function useAuthForm(isLogin: boolean, t: TranslateFn) {
     name: "",
   })
 
-  useEffect(() => {
-    setFormData({ email: "", password: "", confirmPassword: "", name: "" })
-  }, [isLogin])
-  
-
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
@@ -55,28 +48,13 @@ export function useAuthForm(isLogin: boolean, t: TranslateFn) {
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault()
-
-    console.log('╔════════════════════════════════════════╗');
-    console.log('║  フォーム送信開始                      ║');
-    console.log('╚════════════════════════════════════════╝');
-    console.log('モード:', isLogin ? 'ログイン' : '新規登録');
-    console.log('入力データ:', {
-      email: formData.email,
-      password: '***',
-      name: formData.name,
-    });
-
-    // ━━━ ① バリデーション ━━━
-    console.log('\n━━━ ① バリデーション ━━━');
     const vError = validateForm(isLogin, formData, t)
     
     if (vError) {
-      console.log('❌ バリデーションエラー:', vError);
+      toast.error(vError)
       return
     }
-    console.log('✅ バリデーション通過');
 
-    // ━━━ ② API呼び出し ━━━
     await execute(async () => {
       const endpoint = isLogin ? "/api/auth/Login" : "/api/auth/Register"
       
@@ -84,63 +62,28 @@ export function useAuthForm(isLogin: boolean, t: TranslateFn) {
         ? { email: formData.email, password: formData.password }
         : { email: formData.email, password: formData.password, name: formData.name }
 
-      console.log('\n━━━ ② API呼び出し ━━━');
-      console.log('エンドポイント:', endpoint);
-      console.log('送信データ:', {
-        ...payload,
-        password: '***'
-      });
-
-      console.log('\n🌐 fetch実行中...');
       const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       })
 
-      // ━━━ ③ レスポンス受信 ━━━
-      console.log('\n━━━ ③ レスポンス受信 ━━━');
-      console.log('ステータスコード:', response.status);
-      console.log('OK?:', response.ok);
-
-       const data = await response.json()
-      console.log('レスポンスデータ:', data);
+      const data = await response.json()
       const messageKey = data.messageKey ?? "login.login.serverError";
-      // ━━━ ④ エラーチェック ━━━
-      console.log('\n━━━ ④ エラーチェック ━━━');
+      const displayMessage = data.message ?? t(messageKey);
       if (!response.ok) {
-        console.log('❌ APIエラー発生');
-        console.log('エラーメッセージ:', messageKey);
-          toast.error(messageKey)
-        throw new Error(messageKey)
-      
+        toast.error(displayMessage)
+        throw new Error(displayMessage)
       }
-      console.log('✅ API成功');
 
-      // ━━━ ⑤ 成功後の処理 ━━━
-      console.log('\n━━━ ⑤ 成功後の処理 ━━━');
-      // router.push("?mode=login")
-      // フォームをリセット
       setFormData({ email: "", password: "", confirmPassword: "", name: "" })
-      console.log('フォームをリセットしました');
       if (isLogin) {
-        console.log('✅ ログイン成功');
-        console.log('→ ダッシュボードへリダイレクト');
         router.push("/dashboard")
         router.refresh()
-      } else if(!isLogin) {
-        console.log("新規登録成功");
-        router.push("?mode=login");
+      } else {
+        router.push("/dashboard")
         router.refresh()
       }
-      else {
-        console.log('✅ 登録成功');
-        console.log('→ 登録完了フラグをON');
-      }
-
-      console.log('\n╔════════════════════════════════════════╗');
-      console.log('║  処理完了                              ║');
-      console.log('╚════════════════════════════════════════╝\n');
     })
   }, [isLogin, formData, t, router, execute])
 

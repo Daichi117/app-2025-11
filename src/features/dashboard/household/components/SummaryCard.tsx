@@ -1,22 +1,24 @@
 "use client"
-import { useRef, useState } from 'react'
 import { useLanguage } from '@/contexts/LanguageContext'
-import PeriodFilter, { TimePeriod } from './BudgetForm/BudgetButton'
-import { usePeriodManager } from '../hooks/usePeriodManager'
+import  BudgetButton, { TimePeriod } from './BudgetForm/BudgetButton'
 import { useSummary } from '../hooks/useSummary'
 import { formatAmount } from '../utils/useBudgetMoney'
-import { PresetPeriod } from '../types/period'  // ← 追加
+import { PeriodInfo } from '../types/period'
 import { useRefetch } from '@/contexts/RefetchContext'
-export default function SummaryCard() {
+type Props = {
+  timePeriod: TimePeriod
+  onTimePeriodChange: (period: TimePeriod) => void
+  onCustomRange: (start: string, end: string) => void
+  periodInfo: PeriodInfo
+}
+
+export default function SummaryCard({
+  timePeriod,
+  onTimePeriodChange,
+  onCustomRange,
+  periodInfo,
+}: Props) {
   const { t} = useLanguage()
-
-  const [timePeriod, setTimePeriod] = useState<TimePeriod>('monthly')
-
-  // TimePeriod → PresetPeriod に変換（customは monthly にフォールバック）
-  const presetPeriod: PresetPeriod =
-    timePeriod === 'custom' ? 'monthly' : timePeriod  // ← 追加
-
-  const { periodInfo, setFilter } = usePeriodManager(presetPeriod)  // ← PresetPeriod を渡す
   const {refetchTrigger} = useRefetch()
   const { summary } = useSummary(periodInfo,refetchTrigger) 
 
@@ -48,17 +50,10 @@ export default function SummaryCard() {
         <span>{t("household.summary.total")}</span>
       </h2>
 
-  <PeriodFilter
+  <BudgetButton
   timePeriod={timePeriod}
-  setTimePeriod={(period) => {
-    setTimePeriod(period)
-    if (period !== 'custom') {
-      setFilter({ type: 'preset', period })
-    }
-  }}
-  onCustomRange={(start, end) => {
-    setFilter({ type: 'custom', range: { start, end } })  // ← カスタム期間をセット
-  }}
+  setTimePeriod={onTimePeriodChange}
+  onCustomRange={onCustomRange}
 />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 mb-6">

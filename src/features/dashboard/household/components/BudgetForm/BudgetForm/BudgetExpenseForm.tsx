@@ -1,12 +1,13 @@
 "use client"
 import { useLanguage } from "@/contexts/LanguageContext"
 import { useBudgetForm } from "../../../hooks/useBudgetForm"
-import { FIXED_EXPENSE_CATEGORIES, VARIABLE_EXPENSE_CATEGORIES } from "../../../types/form"
 import { formatAmount } from "../../../utils/useBudgetMoney"
 import { useState } from "react"
 import { PlusCircle, RotateCcw } from "lucide-react"
 import { AddCategoryDialog } from "./BudgetDialog"
 import { useCategory } from "@/contexts/ CategoryContext" // ✅ スペース削除
+import { FIXED_EXPENSE_CATEGORIES, VARIABLE_EXPENSE_CATEGORIES } from "../../../types/form"
+import toast from "react-hot-toast"
 
 interface BudgetExpenseFormProps {
   type: 'FIXED' | 'VARIABLE'
@@ -17,7 +18,7 @@ export default function BudgetExpenseForm({ type, onSaved }: BudgetExpenseFormPr
   const { t } = useLanguage()
 
   // ✅ expense用のカテゴリを取得
-  const { fixedCategories, variableCategories, addCustomCategory, resetCustomCategories, hasCustom } = useCategory()
+  const { fixedCategories, variableCategories, addCustomCategory, removeCustomCategory, isCustomCategory } = useCategory()
 
   const [isAdding, setIsAdding] = useState(false)
 
@@ -33,16 +34,32 @@ export default function BudgetExpenseForm({ type, onSaved }: BudgetExpenseFormPr
   const inputClass = "w-full px-4 py-3 border-2 border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-destructive focus:border-destructive transition-all"
 
   // ✅ type をそのまま渡す
-  const handleAddCategory = (categoryName: string) => {
-    addCustomCategory(type, categoryName)
+  const selectedCategoryIsCustom = isCustomCategory(type, formData.category)
+
+  const handleAddCategory = async (categoryName: string) => {
+    const ok = await addCustomCategory(type, categoryName)
+    if (!ok) {
+      toast.error(t("household.messages.saveError"))
+      return
+    }
     handleChange('category', categoryName)
     setIsAdding(false)
   }
 
-  // ✅ type をそのまま渡す
-  const handleResetCustom = () => {
-    resetCustomCategories(type)
-    handleChange('category', Object.keys(categories)[0])
+  const handleRemoveSelectedCustom = async () => {
+    if (!selectedCategoryIsCustom) return
+    const selectedCategory = formData.category
+    const ok = await removeCustomCategory(type, selectedCategory)
+    if (!ok) {
+      toast.error(t("household.messages.deleteError"))
+      return
+    }
+
+    const fallbackCategory =
+      type === "FIXED"
+        ? Object.keys(FIXED_EXPENSE_CATEGORIES)[0]
+        : Object.keys(VARIABLE_EXPENSE_CATEGORIES)[0]
+    handleChange("category", fallbackCategory)
   }
 
   return (
@@ -75,15 +92,15 @@ export default function BudgetExpenseForm({ type, onSaved }: BudgetExpenseFormPr
             </label>
             <div className="flex items-center gap-2">
 
-              {/* ✅ カスタムがある時だけリセットボタン */}
-              {hasCustom(type) && (
+              {/* 選択中カテゴリがカスタムの時だけ削除ボタン */}
+              {selectedCategoryIsCustom && (
                 <button
                   type="button"
-                  onClick={handleResetCustom}
+                  onClick={handleRemoveSelectedCustom}
                   className="flex items-center gap-1 px-2 py-1 text-xs font-medium text-destructive border border-destructive rounded-md hover:bg-destructive/10 transition-colors"
                 >
                   <RotateCcw size={12} />
-                  <span>{t("household.actions.resetCustom")}</span>
+                  <span>{t("household.actions.removeSelectedCustom")}</span>
                 </button>
               )}
 

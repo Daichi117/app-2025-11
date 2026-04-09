@@ -9,17 +9,17 @@ export function useNavigation() {
     const navItems = [
         {path:"/dashboard",label: t("nav.home.title")},
         {path:"/dashboard/household",label: t("nav.household.title")},
-        {path:"/simulation",label: t("nav.simulation.title")},
+        {path:"/dashboard/simulation",label: t("nav.simulation.title")},
+        {path:"/dashboard/todo",label: t("nav.todo.title")},
     ];
 
     const isActive = (path: string) => {
-        const hasExactMatch = navItems.some((item) => item.path === pathname);
-
-        // ルート("/") や未知のパスのときは常に最初のタブを強調表示
-        if (!hasExactMatch) {
-            return path === navItems[0].path;
+        if (path !== "/dashboard" && pathname.startsWith(path)) {
+            return true;
         }
-
+        if (path === "/dashboard" && pathname === "/dashboard") {
+            return true;
+        }
         return pathname === path;
     };
 

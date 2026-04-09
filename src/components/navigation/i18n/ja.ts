@@ -1,4 +1,4 @@
-export default {
+const ja = {
       home:{
             title:"ホーム"
       },
@@ -7,6 +7,11 @@ export default {
       },
       simulation:{
             title:"シミュレーション"
+      },
+      todo: {
+            title:"todo"
       }
       
 }
+
+export default ja;

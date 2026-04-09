@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { PeriodInfo } from '../types/period'
 import { useAsyncState } from '@/components/household/hooks/useAsyncState'
 import { useLanguage } from '@/contexts/LanguageContext'
-
 type Summary = {
   income: number
   expense: number
@@ -39,7 +38,7 @@ export function useSummary(periodInfo: PeriodInfo,refetchTrigger:number) {
       const expense = (expenseData.expenses ?? []).reduce((sum: number, item: { amount: number }) => sum + item.amount, 0)
       setSummary({ income, expense, surplus: income - expense })
     })
-  }, [start, end,refetchTrigger])
+  }, [end, execute, refetchTrigger, start])
 
   return { summary, isLoading }
 }

@@ -10,7 +10,7 @@ export default function DashboardHeader() {
           {navItems.map((item)=>
           <li key={item.path}>
             <Link
-            href={item.path}
+            href={item.path}  
             className={`text-sm font-medium transition-colors pb-3 border-b-2 ${
               isActive(item.path)
                 ? "text-primary border-primary"

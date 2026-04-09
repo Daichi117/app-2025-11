@@ -2,8 +2,15 @@
 import { AuthForm } from "@/features/auth/AuthForm";
 import { Suspense } from "react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { verifyAccessTokenServer } from "@/lib/auth";
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  try {
+    await verifyAccessTokenServer();
+    redirect("/dashboard");
+  } catch {}
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-primary to-primary-hover flex items-center justify-center px-4">
       {/* 1. レイアウトの枠組み */}
@@ -43,7 +50,7 @@ export default function LoginPage() {
 
         {/* 4. フッターなどの静的な補足情報 */}
         <p className="mt-8 text-center text-white/60 text-sm">
-          &copy; 2024 Mirai. All rights reserved.
+          &copy; {new Date().getFullYear()} Mirai. All rights reserved.
         </p>
       </div>
     </main>

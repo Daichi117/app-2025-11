@@ -1,100 +1,71 @@
-// app/api/auth/login/route.ts
+// app/api/auth/Login/route.ts
 
-import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
-import bcrypt from "bcryptjs"
-import { signAccessToken } from "@/lib/auth"
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import bcrypt from "bcryptjs";
+import { signAccessToken } from "@/lib/auth";
+import { getServerTranslator } from "@/i18n/serverTranslate";
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-/**
- * エラーレスポンス共通関数
- */
-function error(messageKey: string, status: number) {
-  return NextResponse.json({ messageKey }, { status })
+function jsonError(
+  t: ReturnType<typeof getServerTranslator>,
+  messageKey: string,
+  status: number
+) {
+  return NextResponse.json(
+    { message: t(messageKey), messageKey },
+    { status }
+  );
 }
 
-/**
- * 入力バリデーション
- */
-function validateInput(email?: string, password?: string) {
-
-  if (!email) {
-    return "login.login.emailRequired"
-  }
-
-  if (!EMAIL_REGEX.test(email)) {
-    return "login.login.emailInvalidFormat"
-  }
-
-
-  if (!password) {
-    return "login.login.passwordTooShort"
-  }
-
-  return null
+/** Returns i18n key or null */
+function validateInput(email?: string, password?: string): string | null {
+  if (!email?.trim()) return "login.login.emailRequired";
+  if (!EMAIL_REGEX.test(email)) return "login.login.emailInvalidFormat";
+  if (!password) return "login.login.passwordRequired";
+  return null;
 }
 
 export async function POST(req: NextRequest) {
+  const t = getServerTranslator(req);
 
   try {
+    const body = await req.json().catch(() => null);
+    const { email, password } = body ?? {};
 
-    // -----------------------------
-    // 1. リクエストボディ取得
-    // -----------------------------
-    const body = await req.json().catch(() => null)
-    const { email, password } = body ?? {}
-
-    // -----------------------------
-    // 2. バリデーション
-    // -----------------------------
-    const validationError = validateInput(email, password)
-
-    if (validationError) {
-      return error(validationError, 400)
+    const validationKey = validateInput(email, password);
+    if (validationKey) {
+      return jsonError(t, validationKey, 400);
     }
 
-    // -----------------------------
-    // 3. ユーザー検索
-    // -----------------------------
     const user = await prisma.user.findUnique({
-      where: { email }
-    })
+      where: { email },
+    });
 
     if (!user) {
-      return error("login.emailInvalidFormat", 401)
+      return jsonError(t, "login.login.invalidCredentials", 401);
     }
 
-    // -----------------------------
-    // 4. パスワード検証
-    // -----------------------------
-    const valid = await bcrypt.compare(password, user.password_hash)
+    const valid = await bcrypt.compare(password, user.password_hash);
 
     if (!valid) {
-      return error("login.login.invalidCredentials", 401)
+      return jsonError(t, "login.login.invalidCredentials", 401);
     }
 
-    // -----------------------------
-    // 5. JWT生成
-    // -----------------------------
     const token = signAccessToken({
-      userId: user.id
-    })
+      userId: user.id,
+    });
 
-    // -----------------------------
-    // 6. レスポンス生成
-    // -----------------------------
     const res = NextResponse.json(
       {
         ok: true,
-        messageKey: "login.login.loginSuccess"
+        message: t("login.login.loginSuccess"),
+        messageKey: "login.login.loginSuccess",
       },
       { status: 200 }
-    )
+    );
 
-    // -----------------------------
-    // 7. Cookie保存
-    // -----------------------------
     res.cookies.set({
       name: "token",
       value: token,
@@ -102,15 +73,12 @@ export async function POST(req: NextRequest) {
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: 60 * 60,
-      path: "/"
-    })
+      path: "/",
+    });
 
-    return res
-
+    return res;
   } catch (err) {
-
-    console.error("login error:", err)
-
-    return error("login.login.serverError", 500)
+    console.error("login error:", err);
+    return jsonError(t, "login.login.serverError", 500);
   }
 }

@@ -6,12 +6,13 @@ import { useLanguage } from "@/contexts/LanguageContext"
 type Props = {
   isOpen: boolean
   onClose: () => void
-  onAdd: (categoryName: string) => void
+  onAdd: (categoryName: string) => Promise<void> | void
   type?: "INCOME" | "FIXED" | "VARIABLE"  // ✅ 追加
 }
 
 export function AddCategoryDialog({ isOpen, onClose, onAdd, type }: Props) {
   const [value, setValue] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const { t } = useLanguage()
 
   if (!isOpen) return null
@@ -22,11 +23,16 @@ export function AddCategoryDialog({ isOpen, onClose, onAdd, type }: Props) {
     ? "bg-destructive text-white"
     : "bg-secondary text-white"
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (!value.trim()) return
-    onAdd(value.trim())
-    setValue("")
-    onClose()
+    setIsSubmitting(true)
+    try {
+      await onAdd(value.trim())
+      setValue("")
+      onClose()
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return createPortal(
@@ -60,6 +66,7 @@ export function AddCategoryDialog({ isOpen, onClose, onAdd, type }: Props) {
           <button
             type="button"
             onClick={handleAdd}
+            disabled={isSubmitting}
             className={`px-4 py-2 rounded-lg ${colorClass}`}
           >
             {t("household.actions.add")}

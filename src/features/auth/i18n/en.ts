@@ -21,6 +21,7 @@ export default {
 
     // Added
     emailRequired: "Please enter your email address",
+    passwordRequired: "Please enter your password",
     emailInvalidFormat: "Please enter a valid email address",
     invalidCredentials: "Incorrect email address or password",
     incorrectPassword: "Incorrect password",

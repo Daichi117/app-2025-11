@@ -5,9 +5,10 @@ import BudgetIncomeForm from './BudgetForm/BudgetIncomeForm'
 import BudgetExpenseForm from './BudgetForm/BudgetExpenseForm'
 import BudgetTab from './BudgetTab/BudgetTab'
 import { FormType } from '../../types/form'
+import { PeriodInfo } from '../../types/period'
 import { useLanguage } from '@/contexts/LanguageContext'
 
-export default function BudgetContents() {
+export default function BudgetContents({ periodInfo }: { periodInfo: PeriodInfo }) {
   const { t } = useLanguage()
   const [activeForm, setActiveForm] = useState<FormType>("NONE")
   const [refreshKey, setRefreshKey] = useState(0)
@@ -42,7 +43,7 @@ export default function BudgetContents() {
 
       {/* フォームが選択されていればタブを表示 */}
       {activeForm !== "NONE" && (
-        <BudgetTab type={activeForm} refreshKey={refreshKey} />
+        <BudgetTab type={activeForm} refreshKey={refreshKey} periodInfo={periodInfo} />
       )}
     </div>
   )

@@ -21,11 +21,15 @@ model User {
   created_at      DateTime         @default(now())
   updated_at      DateTime         @updatedAt
   
-  // リレーション
+  // リレーション:
+  // User を起点に household / simulation / auth のデータを辿れる構成。
   auth_logs       auth_logs[]
   refresh_tokens  refresh_tokens[]
   incomes         Income[]         // ← 追加
   expenses        Expense[]        // ← 追加
+  custom_categories CustomCategory[]
+  simulation_plan SimulationPlan?
+  simulation_todos SimulationTodo[]
 }
 
 model auth_logs {
@@ -58,10 +62,12 @@ model Income {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   
-  // リレーション
+  // リレーション:
+  // 収入は必ず 1 user に紐づく（ユーザー境界での取得/削除を保証しやすくする）。
   user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   
   // インデックス（検索高速化）
+  // household 一覧で多い「ユーザー + 期間」「ユーザー + カテゴリ」検索を想定。
   @@index([user_id, date])
   @@index([user_id, category])
 }
@@ -80,11 +86,69 @@ model Expense {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   
-  // リレーション
+  // リレーション:
+  // Income と同じく user 起点。集計時は type(FIXED/VARIABLE) で分割可能。
   user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   
   // インデックス（検索高速化）
   @@index([user_id, date])
   @@index([user_id, type])
   @@index([user_id, category])
+}
+
+model CustomCategory {
+  id         String   @id @default(uuid())
+  user_id    String
+  type       String
+  name       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // カスタムカテゴリはユーザー単位で管理。削除時は user と一緒に掃除する。
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  // 同一ユーザー・同一タイプで同名カテゴリを二重作成しない制約。
+  @@unique([user_id, type, name])
+  @@index([user_id, type])
+  @@map("custom_categories")
+}
+
+// ============================================
+// 4. シミュレーション条件
+// ============================================
+model SimulationPlan {
+  id                   String   @id @default(uuid())
+  user_id              String   @unique
+  target_amount        Float
+  monthly_contribution Float
+  years                Int
+  annual_return        Float
+  last_mode            String
+  created_at           DateTime @default(now())
+  updated_at           DateTime @updatedAt
+
+  // 1ユーザー1プランを前提に user_id を unique にする。
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("simulation_plans")
+}
+
+model SimulationTodo {
+  id         String   @id @default(uuid())
+  user_id    String
+  title      String
+  category   String?
+  kind       String
+  note       String?
+  completed  Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // TODO はユーザー配下で複数保持できる。
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id, completed])
+  @@index([user_id, kind])
+  @@map("simulation_todos")
 }

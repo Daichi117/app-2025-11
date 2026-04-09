@@ -1,9 +1,24 @@
-export function formatAmount(amount: any): string {
-  if (amount >= 10_000) {
-    const man = (amount / 10_000).toFixed(1)
-    return `${man.toLocaleString()}万円（￥${amount.toLocaleString()}）`
+export function formatAmount(amount: string | number | null | undefined): string {
+  if (amount === null || amount === undefined || amount === "") {
+    return "￥0"
   }
-  return `${amount.toLocaleString()}円`
+
+  const raw = String(amount).trim()
+  if (!raw) return "￥0"
+
+  const sign = raw.startsWith("-") ? "-" : ""
+  const unsigned = raw.replace(/^[+-]/, "")
+  const [integerPartRaw, decimalPart] = unsigned.split(".")
+  const normalizedInteger = integerPartRaw || "0"
+
+  if (!/^\d+$/.test(normalizedInteger) || (decimalPart !== undefined && !/^\d+$/.test(decimalPart))) {
+    const numericValue = Number(amount)
+    if (!Number.isFinite(numericValue)) return "￥0"
+    return `${numericValue < 0 ? "-" : ""}￥${Math.abs(numericValue).toLocaleString("ja-JP")}`
+  }
+
+  const formattedInteger = Number(normalizedInteger).toLocaleString("ja-JP")
+  return `${sign}￥${formattedInteger}${decimalPart !== undefined ? `.${decimalPart}` : ""}`
 }
 
 export type budgetItem = {
@@ -17,7 +32,7 @@ export type budgetItem = {
 export type budgetTableProps = {
   items: budgetItem[]
   formatDate: (dateStr: string) => string
-  onDelete: (id: string, memo: string | null, amount: number) => void
+  onDelete: (id: string, memo: string | null, amount: number, category: string) => void
 }
 
 export type budgetCategoryProps = {

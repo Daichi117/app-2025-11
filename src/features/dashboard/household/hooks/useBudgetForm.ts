@@ -7,6 +7,7 @@ import { useRefetch } from "@/contexts/RefetchContext"
 import toast from "react-hot-toast"
 
 type FormData = {
+  // 入力中は空文字や途中入力を扱うため number ではなく string で保持する。
   amount: string
   category: string
   date: string
@@ -14,6 +15,7 @@ type FormData = {
 }
 
 function validateForm(formData: FormData, t: (key: string) => string): string | null {
+  // FE で先に弾くことで、API往復前にユーザーへ即時フィードバックする。
   if (!formData.amount || !formData.amount.trim()) return t("household.messages.invalidAmount")
   const numAmount = Number(formData.amount)
   if (isNaN(numAmount) || numAmount <= 0) return t("household.messages.zeroAmount")
@@ -31,6 +33,7 @@ export function useBudgetForm(
   const { t } = useLanguage()
   const {triggerRefetch} = useRefetch();
   const { isLoading, execute } = useAsyncState({
+    // execute は loading/success toast の共通ハンドラ。
     successMessage: t("household.messages.saveSuccess"),
     loadingMessage: t("household.messages.saving"),
   })
@@ -48,6 +51,7 @@ export function useBudgetForm(
   })
 
   const handleChange = useCallback((field: string, value: string) => {
+    // フィールド単位更新で、フォームの変更責務を hook に集約する。
     setFormData(prev => ({ ...prev, [field]: value }))
   }, [])
 
@@ -60,7 +64,14 @@ export function useBudgetForm(
     }
 
     await execute(async () => {
-      const payload: any = {
+      // API 契約に合わせて送信時に string -> number へ変換する。
+      const payload: {
+        amount: number
+        category: string
+        date: string
+        memo?: string
+        type?: "FIXED" | "VARIABLE"
+      } = {
         amount: parseFloat(formData.amount),
         category: formData.category,
         date: formData.date,
@@ -77,15 +88,17 @@ export function useBudgetForm(
         body: JSON.stringify(payload),
         credentials: 'include'
       })
-      triggerRefetch()
 
       const text = await response.text()
+      // 空ボディ対策。JSON前提で parse して落ちる事故を防ぐ。
       const data = text ? JSON.parse(text) : {}
 
       if (!response.ok) {
         throw new Error(data.message || '保存に失敗しました')
       }
 
+      triggerRefetch()
+      // 保存後は UX とデータ整合のため、初期カテゴリに戻して入力状態をリセット。
       setFormData({
         amount: "",
         category: defaultCategory,  // ← デフォルトに戻す
@@ -96,7 +109,7 @@ export function useBudgetForm(
       onSuccess?.()   // ← 追加
       router.refresh()
     })
-  }, [formData, t, endpoint, type, router, execute, onSuccess])
+  }, [defaultCategory, endpoint, execute, formData, onSuccess, router, t, triggerRefetch, type])
 
   return { formData, isLoading, handleChange, handleSubmit }
 }
